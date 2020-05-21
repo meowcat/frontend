@@ -8,10 +8,7 @@
   "env": {
     "jest": true
   },
-  "globals": {
-    "gtag": true
-  },
-  "extends": ["standard", "standard-jsx", "plugin:jsx-a11y/recommended"],
+  "extends": ["plugin:jsx-a11y/recommended"],
   "rules": {
     "react/no-unused-prop-types": 1,
     "react/jsx-closing-tag-location": "error",
@@ -30,10 +27,6 @@
         "eventHandlerPrefix": "handle",
         "eventHandlerPropPrefix": "on"
       }
-    ],
-    "react/jsx-max-props-per-line": [
-      "error",
-      { "maximum": 1, "when": "multiline" }
     ],
     "react/jsx-no-bind": [
       "error",
@@ -61,12 +54,11 @@
     "react/no-string-refs": "error",
     "react/react-in-jsx-scope": "error",
     "react/sort-comp": [
-      "warning",
+      "warn",
       {
         "order": [
           "static-methods",
           "instance-variables",
-          "lifecycle",
           "/^on.+$/",
           "getters",
           "setters",
@@ -76,27 +68,6 @@
           "rendering"
         ],
         "groups": {
-          "lifecycle": [
-            "displayName",
-            "propTypes",
-            "contextTypes",
-            "childContextTypes",
-            "mixins",
-            "statics",
-            "defaultProps",
-            "constructor",
-            "getDefaultProps",
-            "getInitialState",
-            "state",
-            "getChildContext",
-            "componentWillMount",
-            "componentDidMount",
-            "componentWillReceiveProps",
-            "shouldComponentUpdate",
-            "componentWillUpdate",
-            "componentDidUpdate",
-            "componentWillUnmount"
-          ],
           "rendering": ["/^render.+$/", "render"]
         }
       }

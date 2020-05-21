@@ -2,14 +2,27 @@ import React from "react";
 import { render } from "react-dom";
 import { Router } from "@reach/router";
 
-import App from "./views/App";
+import Experiments from "./views/Experiments";
+import Home from "./views/Home";
+import Layout from "./components/Layout";
+
 import * as serviceWorker from "./serviceWorker";
 import "./scss/index.scss";
+
+const routes = [
+  { path: "/", name: "Home", Component: Home },
+  { path: "/experiments", name: "Experiments", Component: Experiments },
+];
+const menuRoutes = routes.map(({ path, name }) => ({ path, name }));
 
 render(
   <React.StrictMode>
     <Router>
-      <App path="/" />
+      {routes.map(({ Component, path }) => (
+        <Layout key={path} path={path} routes={menuRoutes}>
+          <Component path="/" />
+        </Layout>
+      ))}
     </Router>
   </React.StrictMode>,
   document.getElementById("root")
