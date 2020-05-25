@@ -1,8 +1,28 @@
 import React from "react";
 import { Table, Tag } from "antd";
 import { ColumnProps } from "antd/es/table";
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 
 import { TableSearch, filterIcon, onFilter } from "../components/TableSearch";
+import Error from "../components/Error";
+
+export const EXPERIMENTS = gql`
+  {
+    experimentByOwner(owner: "me") {
+      codeId
+      owners
+      tags
+      title
+      description
+      creationDate
+      lastModificationDate
+      status {
+        kind
+      }
+    }
+  }
+`;
 
 interface Experiment {
   codeId: string;
@@ -12,10 +32,15 @@ interface Experiment {
   description?: string;
   creationDate: string;
   lastModificationDate?: string;
-  status?: string;
+  status?: { kind: string };
+}
+
+interface ExperimentsData {
+  experimentByOwner: Experiment[];
 }
 
 function renderTags(tags: string[]) {
+  if (!tags) return null;
   return tags.map((tag) => (
     <Tag color="geekblue" key={tag}>
       {tag.toUpperCase()}
@@ -25,7 +50,9 @@ function renderTags(tags: string[]) {
 
 function renderDate(initialDate: string) {
   const date = new Date(initialDate);
-  return `${date.getDate()}/${1 + date.getMonth()}/${date.getFullYear()}`;
+  return initialDate
+    ? `${date.getDate()}/${1 + date.getMonth()}/${date.getFullYear()}`
+    : "";
 }
 
 function stringSorter(key: "codeId" | "title") {
@@ -92,34 +119,23 @@ const columns: ColumnProps<Experiment>[] = [
     key: "status",
     title: "Status",
     dataIndex: "status",
+    render: (value) => (value ? value[0].kind : null),
   },
 ];
 
-const data: Experiment[] = [
-  {
-    codeId: "A30",
-    owners: ["me"],
-    tags: ["hi"],
-    title: "first test",
-    creationDate: new Date(2019).toString(),
-    lastModificationDate: new Date().toString(),
-    status: "active",
-  },
-  {
-    codeId: "A32",
-    owners: ["me", "you"],
-    tags: ["test", "testing"],
-    title: "second test",
-    description: "we are testing",
-    creationDate: new Date(2019).toString(),
-    lastModificationDate: new Date().toString(),
-  },
-];
+const Experiments = (props: any) => {
+  const { loading, error, data } = useQuery<ExperimentsData>(EXPERIMENTS);
 
-const Experiments = (props: any) => (
-  <div className="experiments">
-    <Table<Experiment> columns={columns} dataSource={data} />
-    <div className="detail"></div>
-  </div>
-);
+  if (error) return <Error message={error.message} />;
+  const dataSource = data ? data.experimentByOwner : [];
+
+  return (
+    <Table<Experiment>
+      columns={columns}
+      dataSource={dataSource}
+      loading={loading}
+      className="experiments"
+    />
+  );
+};
 export default Experiments;

@@ -4,7 +4,7 @@
   .main {
     padding: 0 2em 2em;
 
-    .content {
+    &__content {
       margin: 2em 0;
       background: #fff;
       padding: 2em;
@@ -12,7 +12,7 @@
     }
   }
 
-  .logo {
+  &__logo {
     width: 120px;
     height: 31px;
     background: $background;

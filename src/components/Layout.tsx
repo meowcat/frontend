@@ -16,7 +16,7 @@ const LayoutComponent = ({
 }: LayoutProps & RouteComponentProps) => (
   <Layout className="layout">
     <Header className="header">
-      <div className="logo" />
+      <div className="layout__logo" />
       <Menu theme="dark" mode="horizontal" selectedKeys={[path || ""]}>
         {routes.map(({ name, path: key }) => (
           <Menu.Item key={key}>
@@ -26,7 +26,7 @@ const LayoutComponent = ({
       </Menu>
     </Header>
     <Layout className="main">
-      <Content className="content">{children}</Content>
+      <Content className="main__content">{children}</Content>
     </Layout>
   </Layout>
 );

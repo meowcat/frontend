@@ -1,10 +1,46 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { GraphQLError } from "graphql";
+import { render, screen, wait } from "@testing-library/react";
+import { MockedProvider } from "@apollo/react-testing";
 
-import Experiments from "../Experiments";
+import Experiments, { EXPERIMENTS } from "../Experiments";
 
 it("Search for columns", () => {
-  render(<Experiments />);
+  const mocks = [
+    {
+      request: { query: EXPERIMENTS },
+      result: {
+        data: {
+          experimentByOwner: [
+            {
+              codeId: "A30",
+              owners: ["me"],
+              tags: ["hi"],
+              title: "first test",
+              creationDate: new Date(2019).toString(),
+              lastModificationDate: new Date().toString(),
+              status: "active",
+            },
+            {
+              codeId: "A32",
+              owners: ["me", "you"],
+              tags: ["test", "testing"],
+              title: "second test",
+              description: "we are testing",
+              creationDate: new Date(2019).toString(),
+              lastModificationDate: new Date().toString(),
+            },
+          ],
+        },
+      },
+    },
+  ];
+
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Experiments />
+    </MockedProvider>
+  );
   const columns = [
     "Identifier",
     "Owners",
@@ -18,4 +54,23 @@ it("Search for columns", () => {
   for (const column of columns) {
     expect(screen.getByText(column)).toBeInTheDocument();
   }
+});
+
+it("Error display", async () => {
+  const mocks = [
+    {
+      request: { query: EXPERIMENTS },
+      result: {
+        errors: [new GraphQLError("Error!")],
+      },
+    },
+  ];
+
+  render(
+    <MockedProvider mocks={mocks} addTypename={false}>
+      <Experiments />
+    </MockedProvider>
+  );
+  await wait();
+  expect(screen.getByText("GraphQL error: Error!")).toBeInTheDocument();
 });
