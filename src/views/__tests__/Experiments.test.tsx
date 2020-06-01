@@ -13,7 +13,6 @@ it("Search for columns", () => {
         data: {
           experimentByOwner: [
             {
-              codeId: "A30",
               owners: ["me"],
               tags: ["hi"],
               title: "first test",
@@ -22,7 +21,6 @@ it("Search for columns", () => {
               status: "active",
             },
             {
-              codeId: "A32",
               owners: ["me", "you"],
               tags: ["test", "testing"],
               title: "second test",
@@ -42,11 +40,10 @@ it("Search for columns", () => {
     </MockedProvider>
   );
   const columns = [
-    "Identifier",
-    "Owners",
-    "Tags",
     "Title",
     "Description",
+    "Owners",
+    "Tags",
     "Creation date",
     "Last modification date",
     "Status",

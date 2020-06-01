@@ -1,16 +1,25 @@
-import React from "react";
-import { Table, Tag } from "antd";
+import React, { useState } from "react";
+import { Table, Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { ColumnProps } from "antd/es/table";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
-import { TableSearch, filterIcon, onFilter } from "../components/TableSearch";
-import Error from "../components/Error";
+import ExperimentForm from "./ExperimentForm";
+
+import {
+  TableSearch,
+  filterIcon,
+  onFilter,
+} from "../../components/TableSearch";
+import Tag from "../../components/Tag";
+import Error from "../../components/Error";
+
+import { hashColor } from "../../utils";
 
 export const EXPERIMENTS = gql`
   {
     experimentByOwner(owner: "me") {
-      codeId
       owners
       tags
       title
@@ -42,7 +51,7 @@ interface ExperimentsData {
 function renderTags(tags: string[]) {
   if (!tags) return null;
   return tags.map((tag) => (
-    <Tag color="geekblue" key={tag}>
+    <Tag color={hashColor(tag)} key={tag}>
       {tag.toUpperCase()}
     </Tag>
   ));
@@ -51,7 +60,7 @@ function renderTags(tags: string[]) {
 function renderDate(initialDate: string) {
   const date = new Date(initialDate);
   return initialDate
-    ? `${date.getDate()}/${1 + date.getMonth()}/${date.getFullYear()}`
+    ? `${date.getDate()} / ${1 + date.getMonth()} / ${date.getFullYear()}`
     : "";
 }
 
@@ -60,28 +69,6 @@ function stringSorter(key: "codeId" | "title") {
 }
 
 const columns: ColumnProps<Experiment>[] = [
-  {
-    key: "codeId",
-    title: "Identifier",
-    dataIndex: "codeId",
-    sorter: stringSorter("codeId"),
-    sortDirections: ["descend", "ascend"],
-    filterDropdown: (props) => <TableSearch {...props} dataIndex="codeId" />,
-    filterIcon,
-    onFilter: (value, record) => onFilter<Experiment>(value, record, "codeId"),
-  },
-  {
-    key: "owners",
-    title: "Owners",
-    dataIndex: "owners",
-    render: renderTags,
-  },
-  {
-    key: "tags",
-    title: "Tags",
-    dataIndex: "tags",
-    render: renderTags,
-  },
   {
     key: "title",
     title: "Title",
@@ -104,6 +91,18 @@ const columns: ColumnProps<Experiment>[] = [
       onFilter<Experiment>(value, record, "description"),
   },
   {
+    key: "owners",
+    title: "Owners",
+    dataIndex: "owners",
+    render: renderTags,
+  },
+  {
+    key: "tags",
+    title: "Tags",
+    dataIndex: "tags",
+    render: renderTags,
+  },
+  {
     key: "creationDate",
     title: "Creation date",
     dataIndex: "creationDate",
@@ -124,18 +123,37 @@ const columns: ColumnProps<Experiment>[] = [
 ];
 
 const Experiments = (props: any) => {
-  const { loading, error, data } = useQuery<ExperimentsData>(EXPERIMENTS);
+  const { loading, error, data, refetch } = useQuery<ExperimentsData>(
+    EXPERIMENTS
+  );
+  const [visible, setVisible] = useState(false);
 
   if (error) return <Error message={error.message} />;
   const dataSource = data ? data.experimentByOwner : [];
 
+  const closeModal = (reload: boolean) => {
+    if (reload) {
+      refetch();
+    }
+    setVisible(false);
+  };
+
   return (
-    <Table<Experiment>
-      columns={columns}
-      dataSource={dataSource}
-      loading={loading}
-      className="experiments"
-    />
+    <div className="experiments">
+      <ExperimentForm visible={visible} closeModal={closeModal} />
+      <div className="experiments__header">
+        <h2>Experiments</h2>
+        <Button onClick={() => setVisible(true)}>
+          <PlusOutlined />
+          Add new experiment
+        </Button>
+      </div>
+      <Table<Experiment>
+        columns={columns}
+        dataSource={dataSource}
+        loading={loading}
+      />
+    </div>
   );
 };
 export default Experiments;

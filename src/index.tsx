@@ -4,7 +4,7 @@ import { Router } from "@reach/router";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 
-import Experiments from "./views/Experiments";
+import Experiments from "./views/Experiments/index";
 import Home from "./views/Home";
 import Layout from "./components/Layout";
 
