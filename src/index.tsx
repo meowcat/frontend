@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "react-dom";
+import ReactDOM from "react-dom";
 import { Router } from "@reach/router";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
@@ -21,20 +21,26 @@ const routes = [
 ];
 const menuRoutes = routes.map(({ path, name }) => ({ path, name }));
 
-render(
-  <React.StrictMode>
-    <ApolloProvider client={client}>
-      <Router>
-        {routes.map(({ Component, path }) => (
-          <Layout key={path} path={path} routes={menuRoutes}>
-            <Component path="/" />
-          </Layout>
-        ))}
-      </Router>
-    </ApolloProvider>
-  </React.StrictMode>,
-  document.getElementById("root")
+const App = () => (
+  <ApolloProvider client={client}>
+    <Router>
+      {routes.map(({ Component, path }) => (
+        <Layout key={path} path={path} routes={menuRoutes}>
+          <Component path="/" />
+        </Layout>
+      ))}
+    </Router>
+  </ApolloProvider>
 );
+
+if (process.env.NODE_ENV !== "production") {
+  import("react-axe").then((axe) => {
+    axe.default(React, ReactDOM, 1000);
+    ReactDOM.render(<App />, document.getElementById("root"));
+  });
+} else {
+  ReactDOM.render(<App />, document.getElementById("root"));
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
