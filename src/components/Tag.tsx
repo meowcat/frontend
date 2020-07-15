@@ -1,5 +1,5 @@
-import React from "react";
-import { adjustColor, colorLum } from "../utils";
+import React from 'react';
+import { adjustColor, colorLum } from '../utils/color';
 
 interface Props {
   children: React.ReactNode;

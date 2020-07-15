@@ -1,0 +1,13 @@
+query experiments($page: Int!, $filters: ExperimentFilters!) {
+  experiments(page: $page, filters: $filters) {
+    owners
+    tags
+    title
+    description
+    creationDate
+    lastModificationDate
+    status {
+      kind
+    }
+  }
+}

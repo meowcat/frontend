@@ -1,52 +1,15 @@
-import React, { useState } from "react";
-import { Table, Button } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import { ColumnProps } from "antd/es/table";
-import { useQuery } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import React, { useState } from 'react';
+import { Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
-import ExperimentForm from "./ExperimentForm";
+import ExperimentForm from './ExperimentForm';
 
-import {
-  TableSearch,
-  filterIcon,
-  onFilter,
-} from "../../components/TableSearch";
-import Tag from "../../components/Tag";
-import Error from "../../components/Error";
+import Tag from '../../components/Tag';
+import Error from '../../components/Error';
 
-import { hashColor } from "../../utils";
-
-export const EXPERIMENTS = gql`
-  {
-    experimentByOwner(owner: "me") {
-      owners
-      tags
-      title
-      description
-      creationDate
-      lastModificationDate
-      status {
-        kind
-      }
-    }
-  }
-`;
-
-interface Experiment {
-  codeId: string;
-  owners: string[];
-  tags: string[];
-  title: string;
-  description?: string;
-  creationDate: string;
-  lastModificationDate?: string;
-  status?: { kind: string };
-}
-
-interface ExperimentsData {
-  experimentByOwner: Experiment[];
-}
+import { hashColor } from '../../utils/color';
+import { Experiment, useExperimentsQuery } from '../../utils/generated';
+import Table, { TableColumn } from '../../components/Table';
 
 function renderTags(tags: string[]) {
   if (!tags) return null;
@@ -61,80 +24,61 @@ function renderDate(initialDate: string) {
   const date = new Date(initialDate);
   return initialDate
     ? `${date.getDate()} / ${1 + date.getMonth()} / ${date.getFullYear()}`
-    : "";
+    : '';
 }
 
-function stringSorter(key: "codeId" | "title") {
+function stringSorter(key: 'codeId' | 'title') {
   return (a: Experiment, b: Experiment) => a[key].localeCompare(b[key]);
 }
 
-const columns: ColumnProps<Experiment>[] = [
+const columns: TableColumn<Experiment>[] = [
   {
-    key: "title",
-    title: "Title",
-    dataIndex: "title",
-    sorter: stringSorter("title"),
-    sortDirections: ["descend", "ascend"],
-    filterDropdown: (props) => <TableSearch {...props} dataIndex="title" />,
-    filterIcon,
-    onFilter: (value, record) => onFilter<Experiment>(value, record, "title"),
+    key: 'title',
+    title: 'Title',
+    sorter: stringSorter('title'),
   },
   {
-    key: "description",
-    title: "Description",
-    dataIndex: "description",
-    filterDropdown: (props) => (
-      <TableSearch {...props} dataIndex="description" />
-    ),
-    filterIcon,
-    onFilter: (value, record) =>
-      onFilter<Experiment>(value, record, "description"),
+    key: 'description',
+    title: 'Description',
   },
   {
-    key: "owners",
-    title: "Owners",
-    dataIndex: "owners",
+    key: 'owners',
+    title: 'Owners',
     render: renderTags,
   },
   {
-    key: "tags",
-    title: "Tags",
-    dataIndex: "tags",
+    key: 'tags',
+    title: 'Tags',
     render: renderTags,
   },
   {
-    key: "creationDate",
-    title: "Creation date",
-    dataIndex: "creationDate",
+    key: 'creationDate',
+    title: 'Creation date',
     render: renderDate,
   },
   {
-    key: "lastModificationDate",
-    title: "Last modification date",
-    dataIndex: "lastModificationDate",
+    key: 'lastModificationDate',
+    title: 'Last modification date',
     render: renderDate,
   },
   {
-    key: "status",
-    title: "Status",
-    dataIndex: "status",
-    render: (value) => (value ? value[0].kind : null),
+    key: 'status',
+    title: 'Status',
+    render: (value: Experiment['status']) => (value ? value[0].kind : null),
   },
 ];
 
-const Experiments = (props: any) => {
-  const { loading, error, data, refetch } = useQuery<ExperimentsData>(
-    EXPERIMENTS
-  );
+const Experiments = (_: any) => {
+  const { loading, error, data, refetch } = useExperimentsQuery({
+    variables: { page: 0, filters: {} },
+  });
   const [visible, setVisible] = useState(false);
 
   if (error) return <Error message={error.message} />;
-  const dataSource = data ? data.experimentByOwner : [];
+  if (loading) return <span>Loading</span>;
 
   const closeModal = (reload: boolean) => {
-    if (reload) {
-      refetch();
-    }
+    if (reload) refetch();
     setVisible(false);
   };
 
@@ -148,11 +92,7 @@ const Experiments = (props: any) => {
           Add new experiment
         </Button>
       </div>
-      <Table<Experiment>
-        columns={columns}
-        dataSource={dataSource}
-        loading={loading}
-      />
+      <Table<Experiment> columns={columns} data={data?.experiments || []} />
     </div>
   );
 };
