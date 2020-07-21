@@ -11,3 +11,10 @@ query experiments($page: Int!, $filters: ExperimentFilters!) {
     }
   }
 }
+
+mutation createExperiment($experiment: ExperimentInput!) {
+  createExperiment(experiment: $experiment) {
+    _id
+    title
+  }
+}

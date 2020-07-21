@@ -1,83 +1,51 @@
-import React from "react";
-import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
-import { Form, Input, Select } from "antd";
-import { Store } from "antd/lib/form/interface";
+import React from 'react';
+import * as Yup from 'yup';
 
-import ModalForm from "../../components/ModalForm";
-
-const { Item } = Form;
-const { Option } = Select;
+import { useCreateExperimentMutation } from '../../utils/generated';
+import ModalForm from '../../components/ModalForm';
+import FormInput from '../../components/FormInput';
+import FormSelect from '../../components/FormSelect';
+import FormTags from '../../components/FormTags';
 
 interface Props {
-  visible: boolean;
   closeModal: (reload: boolean) => void;
 }
 
 interface ExperimentInput {
-  owners: string[];
-  tags: string[];
   title: string;
   description?: string;
-  status: Array<{ kind: string; date: string }>;
+  tags: string[];
+  status: string;
 }
 
-const CREATE_EXPERIMENT = gql`
-  mutation createExperiment($experiment: ExperimentInput!) {
-    createExperiment(experiment: $experiment) {
-      _id
-      title
-    }
-  }
-`;
+const ExperimentForm = ({ closeModal }: Props) => {
+  const [createExperiment] = useCreateExperimentMutation();
 
-const ExperimentForm = ({ visible, closeModal }: Props) => {
-  const [createExperiment, { loading, error }] = useMutation<ExperimentInput>(
-    CREATE_EXPERIMENT
-  );
-
-  const onCreate = (data: Store) => {
+  const onSubmit = (data: ExperimentInput) => {
     const experiment = {
       ...data,
-      owners: ["me"],
-      status: [{ kind: data.status, date: new Date().toString() }],
+      owners: ['me'],
+      status: { kind: data.status, date: new Date().toString() },
     };
     createExperiment({ variables: { experiment } });
     closeModal(true);
   };
 
-  const required = (title: string) => [
-    { required: true, message: `Please input the ${title}` },
-  ];
-
   return (
     <ModalForm
-      name="experiment"
-      visible={visible}
-      onCreate={onCreate}
+      initialValues={{ title: '', tags: [], status: '' }}
+      validationSchema={Yup.object({
+        title: Yup.string().required('Required'),
+        status: Yup.string().required('Required'),
+      })}
+      onSubmit={onSubmit}
       onCancel={() => closeModal(false)}
-      loading={loading}
+      title="Create experiment"
     >
-      <Item name="title" label="Title" rules={required("title")}>
-        <Input />
-      </Item>
-      <Item name="description" label="Description">
-        <Input type="textarea" />
-      </Item>
-      <Item name="tags" label="Tags">
-        <Select placeholder="Add a tag" mode="tags" defaultValue={[]} />
-      </Item>
-      <Item name="status" label="Status" rules={required("status")}>
-        <Select placeholder="Select a status" allowClear>
-          <Option value="active">active</Option>
-          <Option value="inactive">inactive</Option>
-        </Select>
-      </Item>
-      {error && (
-        <div style={{ color: "#c51244" }}>
-          An error has ocurred, please try again
-        </div>
-      )}
+      <FormInput label="Title" name="title" />
+      <FormInput label="Description" name="description" />
+      <FormTags label="Tags" name="tags" />
+      <FormSelect label="Status" name="status" items={['active', 'inactive']} />
     </ModalForm>
   );
 };

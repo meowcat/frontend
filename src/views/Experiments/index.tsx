@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
-import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
 
 import ExperimentForm from './ExperimentForm';
 
-import Tag from '../../components/Tag';
 import Error from '../../components/Error';
 
-import { hashColor } from '../../utils/color';
 import { Experiment, useExperimentsQuery } from '../../utils/generated';
 import Table, { TableColumn } from '../../components/Table';
 
 function renderTags(tags: string[]) {
   if (!tags) return null;
   return tags.map((tag) => (
-    <Tag color={hashColor(tag)} key={tag}>
-      {tag.toUpperCase()}
-    </Tag>
+    <span
+      key={tag}
+      className="inline-flex px-2 mr-1 text-xs font-semibold leading-5 text-blue-800 uppercase whitespace-no-wrap bg-blue-100 rounded-full"
+    >
+      {tag}
+    </span>
   ));
 }
 
@@ -24,7 +23,7 @@ function renderDate(initialDate: string) {
   const date = new Date(initialDate);
   return initialDate
     ? `${date.getDate()} / ${1 + date.getMonth()} / ${date.getFullYear()}`
-    : '';
+    : 'None';
 }
 
 function stringSorter(key: 'codeId' | 'title') {
@@ -81,18 +80,47 @@ const Experiments = (_: any) => {
     if (reload) refetch();
     setVisible(false);
   };
-
   return (
-    <div className="experiments">
-      <ExperimentForm visible={visible} closeModal={closeModal} />
-      <div className="experiments__header">
-        <h2>Experiments</h2>
-        <Button onClick={() => setVisible(true)}>
-          <PlusOutlined />
-          Add new experiment
-        </Button>
-      </div>
-      <Table<Experiment> columns={columns} data={data?.experiments || []} />
+    <div>
+      {visible ? <ExperimentForm closeModal={closeModal} /> : null}
+      <header className="bg-white shadow">
+        <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="lg:flex lg:items-center lg:justify-between">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
+                Experiments
+              </h2>
+            </div>
+            <div className="flex mt-5 lg:mt-0 lg:ml-4">
+              <span className="rounded-md shadow-sm sm:ml-3">
+                <button
+                  type="button"
+                  onClick={() => setVisible(true)}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out bg-blue-500 border border-transparent rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue focus:border-blue-700 active:bg-blue-700"
+                >
+                  <svg
+                    className="w-5 h-5 mr-2 -ml-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Add new experiment
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <Table<Experiment> columns={columns} data={data?.experiments || []} />
+        </div>
+      </main>
     </div>
   );
 };

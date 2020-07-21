@@ -312,8 +312,8 @@ export type Status = {
 };
 
 export type StatusInput = {
-  kind?: Maybe<Scalars['String']>;
-  date?: Maybe<Scalars['String']>;
+  kind: Scalars['String'];
+  date: Scalars['String'];
 };
 
 export type Experiment = {
@@ -547,6 +547,19 @@ export type ExperimentsQuery = (
   )>> }
 );
 
+export type CreateExperimentMutationVariables = Exact<{
+  experiment: ExperimentInput;
+}>;
+
+
+export type CreateExperimentMutation = (
+  { __typename?: 'Mutation' }
+  & { createExperiment?: Maybe<(
+    { __typename?: 'Experiment' }
+    & Pick<Experiment, '_id' | 'title'>
+  )> }
+);
+
 
 export const ExperimentsDocument = gql`
     query experiments($page: Int!, $filters: ExperimentFilters!) {
@@ -593,3 +606,36 @@ export type ExperimentsQueryResult = ApolloReactCommon.QueryResult<ExperimentsQu
 export function refetchExperimentsQuery(variables?: ExperimentsQueryVariables) {
       return { query: ExperimentsDocument, variables: variables }
     }
+export const CreateExperimentDocument = gql`
+    mutation createExperiment($experiment: ExperimentInput!) {
+  createExperiment(experiment: $experiment) {
+    _id
+    title
+  }
+}
+    `;
+export type CreateExperimentMutationFn = ApolloReactCommon.MutationFunction<CreateExperimentMutation, CreateExperimentMutationVariables>;
+
+/**
+ * __useCreateExperimentMutation__
+ *
+ * To run a mutation, you first call `useCreateExperimentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateExperimentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createExperimentMutation, { data, loading, error }] = useCreateExperimentMutation({
+ *   variables: {
+ *      experiment: // value for 'experiment'
+ *   },
+ * });
+ */
+export function useCreateExperimentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateExperimentMutation, CreateExperimentMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateExperimentMutation, CreateExperimentMutationVariables>(CreateExperimentDocument, baseOptions);
+      }
+export type CreateExperimentMutationHookResult = ReturnType<typeof useCreateExperimentMutation>;
+export type CreateExperimentMutationResult = ApolloReactCommon.MutationResult<CreateExperimentMutation>;
+export type CreateExperimentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateExperimentMutation, CreateExperimentMutationVariables>;

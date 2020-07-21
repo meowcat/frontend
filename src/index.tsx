@@ -1,23 +1,23 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Router } from "@reach/router";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Router } from '@reach/router';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
 
-import Experiments from "./views/Experiments/index";
-import Home from "./views/Home";
-import Layout from "./components/Layout";
+import Experiments from './views/Experiments/index';
+import Home from './views/Home';
+import Layout from './components/Layout';
 
-import * as serviceWorker from "./serviceWorker";
-import "./scss/index.scss";
+import * as serviceWorker from './serviceWorker';
+import './styles/tailwind.css';
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: 'http://localhost:4000/graphql',
 });
 
 const routes = [
-  { path: "/", name: "Home", Component: Home },
-  { path: "/experiments", name: "Experiments", Component: Experiments },
+  { path: '/', name: 'Home', Component: Home },
+  { path: '/experiments', name: 'Experiments', Component: Experiments },
 ];
 const menuRoutes = routes.map(({ path, name }) => ({ path, name }));
 
@@ -33,13 +33,13 @@ const App = () => (
   </ApolloProvider>
 );
 
-if (process.env.NODE_ENV !== "production") {
-  import("react-axe").then((axe) => {
+if (process.env.NODE_ENV !== 'production') {
+  import('react-axe').then((axe) => {
     axe.default(React, ReactDOM, 1000);
-    ReactDOM.render(<App />, document.getElementById("root"));
+    ReactDOM.render(<App />, document.getElementById('root'));
   });
 } else {
-  ReactDOM.render(<App />, document.getElementById("root"));
+  ReactDOM.render(<App />, document.getElementById('root'));
 }
 
 // If you want your app to work offline and load faster, you can change

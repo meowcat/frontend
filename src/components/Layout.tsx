@@ -1,8 +1,6 @@
-import React from "react";
-import { Layout, Menu } from "antd";
-import { RouteComponentProps } from "@reach/router";
-import { Link } from "@reach/router";
-const { Header, Content } = Layout;
+import React from 'react';
+import { RouteComponentProps } from '@reach/router';
+import Header from './Header';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,21 +12,10 @@ const LayoutComponent = ({
   routes,
   path,
 }: LayoutProps & RouteComponentProps) => (
-  <Layout className="layout">
-    <Header className="header">
-      <div className="layout__logo" />
-      <Menu theme="dark" mode="horizontal" selectedKeys={[path || ""]}>
-        {routes.map(({ name, path: key }) => (
-          <Menu.Item key={key}>
-            <Link to={key}>{name}</Link>
-          </Menu.Item>
-        ))}
-      </Menu>
-    </Header>
-    <Layout className="main">
-      <Content className="main__content">{children}</Content>
-    </Layout>
-  </Layout>
+  <>
+    <Header routes={routes} path={path} />
+    {children}
+  </>
 );
 
 export default LayoutComponent;
