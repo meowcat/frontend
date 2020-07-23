@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router } from '@reach/router';
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
 import Experiments from './views/Experiments/index';
 import Home from './views/Home';
@@ -13,6 +12,7 @@ import './styles/tailwind.css';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql',
+  cache: new InMemoryCache(),
 });
 
 const routes = [

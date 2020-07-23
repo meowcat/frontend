@@ -1,7 +1,10 @@
 import React from 'react';
 import * as Yup from 'yup';
 
-import { useCreateExperimentMutation } from '../../utils/generated';
+import {
+  useCreateExperimentMutation,
+  ExperimentsDocument,
+} from '../../utils/generated';
 import ModalForm from '../../components/ModalForm';
 import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
@@ -19,7 +22,20 @@ interface ExperimentInput {
 }
 
 const ExperimentForm = ({ closeModal }: Props) => {
-  const [createExperiment] = useCreateExperimentMutation();
+  const [createExperiment] = useCreateExperimentMutation({
+    update(cache, { data }) {
+      const newExeperiment = data?.createExperiment;
+      const response: { experiments: any[] } | null = cache.readQuery({
+        query: ExperimentsDocument,
+        variables: { page: 0, filters: {} },
+      });
+      const experiments = response?.experiments || [];
+      cache.writeQuery({
+        query: ExperimentsDocument,
+        data: { experiments: [...experiments, newExeperiment] },
+      });
+    },
+  });
 
   const onSubmit = (data: ExperimentInput) => {
     const experiment = {
@@ -27,7 +43,21 @@ const ExperimentForm = ({ closeModal }: Props) => {
       owners: ['me'],
       status: { kind: data.status, date: new Date().toString() },
     };
-    createExperiment({ variables: { experiment } });
+    createExperiment({
+      variables: { experiment },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createExperiment: {
+          __typename: 'Experiment',
+          _id: 'optimistic',
+          title: experiment.title,
+          description: experiment.description,
+          owners: experiment.owners,
+          status: [experiment.status],
+          creationDate: new Date().toString(),
+        },
+      },
+    });
     closeModal(true);
   };
 

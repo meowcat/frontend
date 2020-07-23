@@ -8,6 +8,7 @@ generates:
       - typescript-operations
       - typescript-react-apollo
     config:
+      reactApolloVersion: 3
       withHooks: true
       withRefetchFn: true
       withComponent: false

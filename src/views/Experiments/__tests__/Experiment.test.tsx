@@ -1,7 +1,7 @@
 import React from 'react';
 import { GraphQLError } from 'graphql';
 import { render, screen, wait } from '@testing-library/react';
-import { MockedProvider } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/client/testing';
 
 import Experiments from '../index';
 import { ExperimentsDocument } from '../../../utils/generated';
@@ -73,5 +73,5 @@ it('Error display', async () => {
     </MockedProvider>,
   );
   await wait();
-  expect(screen.getByText('GraphQL error: Error!')).toBeInTheDocument();
+  expect(screen.getByText('Error!')).toBeInTheDocument();
 });

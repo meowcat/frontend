@@ -1,20 +1,24 @@
+fragment ExperimentFields on Experiment {
+  _id
+  owners
+  tags
+  title
+  description
+  creationDate
+  lastModificationDate
+  status {
+    kind
+  }
+}
+
 query experiments($page: Int!, $filters: ExperimentFilters!) {
   experiments(page: $page, filters: $filters) {
-    owners
-    tags
-    title
-    description
-    creationDate
-    lastModificationDate
-    status {
-      kind
-    }
+    ...ExperimentFields
   }
 }
 
 mutation createExperiment($experiment: ExperimentInput!) {
   createExperiment(experiment: $experiment) {
-    _id
-    title
+    ...ExperimentFields
   }
 }
