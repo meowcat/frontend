@@ -4,8 +4,9 @@ import ExperimentForm from './ExperimentForm';
 
 import Error from '../../components/Error';
 
-import { Experiment, useExperimentsQuery } from '../../utils/generated';
 import Table, { TableColumn } from '../../components/Table';
+import { Experiment, useExperimentsQuery } from '../../utils/generated';
+import { getNumberUrlParam } from '../../utils/filters';
 
 function renderTags(tags: string[]) {
   if (!tags) return null;
@@ -69,17 +70,17 @@ const columns: TableColumn<Experiment>[] = [
 
 const Experiments = (_: any) => {
   const { loading, error, data, refetch } = useExperimentsQuery({
-    variables: { page: 0, filters: {} },
+    variables: { page: getNumberUrlParam('page'), filters: {} },
   });
   const [visible, setVisible] = useState(false);
 
   if (error) return <Error message={error.message} />;
-  if (loading) return <span>Loading</span>;
 
   const closeModal = (reload: boolean) => {
     if (reload) refetch();
     setVisible(false);
   };
+  const { result = [], totalCount = 0 } = data?.experiments || {};
   return (
     <div>
       {visible ? <ExperimentForm closeModal={closeModal} /> : null}
@@ -118,7 +119,12 @@ const Experiments = (_: any) => {
       </header>
       <main>
         <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <Table<Experiment> columns={columns} data={data?.experiments || []} />
+          <Table<Experiment>
+            columns={columns}
+            data={result || []}
+            totalCount={totalCount}
+            loading={loading}
+          />
         </div>
       </main>
     </div>

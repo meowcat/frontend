@@ -13,7 +13,10 @@ fragment ExperimentFields on Experiment {
 
 query experiments($page: Int!, $filters: ExperimentFilters!) {
   experiments(page: $page, filters: $filters) {
-    ...ExperimentFields
+    result {
+      ...ExperimentFields
+    }
+    totalCount
   }
 }
 

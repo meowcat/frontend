@@ -5,6 +5,7 @@ import {
   useCreateExperimentMutation,
   ExperimentsDocument,
 } from '../../utils/generated';
+import { getNumberUrlParam } from '../../utils/filters';
 import ModalForm from '../../components/ModalForm';
 import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
@@ -27,7 +28,7 @@ const ExperimentForm = ({ closeModal }: Props) => {
       const newExeperiment = data?.createExperiment;
       const response: { experiments: any[] } | null = cache.readQuery({
         query: ExperimentsDocument,
-        variables: { page: 0, filters: {} },
+        variables: { page: getNumberUrlParam('page'), filters: {} },
       });
       const experiments = response?.experiments || [];
       cache.writeQuery({

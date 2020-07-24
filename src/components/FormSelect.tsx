@@ -25,6 +25,7 @@ const FormSelect = ({ label, name, items }: SelectProps) => {
   );
   const [visible, setVisible] = useState(false);
   const hasError = touched && error;
+  let timeOutId: number | null = null;
   return (
     <div className="min-w-full pb-3">
       <label
@@ -33,7 +34,13 @@ const FormSelect = ({ label, name, items }: SelectProps) => {
       >
         {label}
       </label>
-      <div className="relative">
+      <div
+        className="relative"
+        onBlur={() => {
+          timeOutId = setTimeout(() => setVisible(false));
+        }}
+        onFocus={() => timeOutId && clearTimeout(timeOutId)}
+      >
         <span className="inline-block w-full rounded-md shadow-sm">
           <button
             type="button"
