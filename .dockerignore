@@ -1,0 +1,9 @@
+coverage/
+build/
+nginx/
+node_modules/
+.eslintcache
+.gitignore
+codegen.yml
+LICENSE
+README.md
