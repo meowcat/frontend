@@ -1,6 +1,6 @@
+/* purgecss start ignore */
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
 
 .link-disable {
   pointer-events: none;
@@ -74,3 +74,6 @@
     transform: rotate(360deg);
   }
 }
+/* purgecss end ignore */
+
+@tailwind utilities;

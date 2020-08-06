@@ -1,5 +1,12 @@
 module.exports = {
-  purge: [],
+  purge: {
+    enabled: true,
+    content: [
+      './src/components/*.tsx',
+      './src/views/**/*.tsx',
+      './src/views/*.tsx',
+    ],
+  },
   target: 'relaxed',
   prefix: '',
   important: false,
@@ -217,9 +224,7 @@ module.exports = {
     divideColor: (theme) => theme('borderColor'),
     divideOpacity: (theme) => theme('borderOpacity'),
     divideWidth: (theme) => theme('borderWidth'),
-    fill: {
-      current: 'currentColor',
-    },
+    fill: { current: 'currentColor' },
     flex: {
       '1': '1 1 0%',
       auto: '1 1 auto',
@@ -655,6 +660,7 @@ module.exports = {
     borderWidth: ['responsive'],
     boxShadow: ['responsive', 'hover', 'focus'],
     boxSizing: ['responsive'],
+    container: ['responsive'],
     cursor: ['responsive'],
     display: ['responsive'],
     divideColor: ['responsive'],
