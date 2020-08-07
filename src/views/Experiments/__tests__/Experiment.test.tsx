@@ -9,36 +9,34 @@ import { ExperimentsDocument } from '../../../utils/generated';
 const variables = { page: 0, filters: {} };
 
 it('Search for columns', async () => {
-  const mocks = [
-    {
-      request: { query: ExperimentsDocument, variables },
-      result: {
-        data: {
-          experiments: [
-            {
-              owners: ['me'],
-              tags: ['hi'],
-              title: 'first test',
-              creationDate: new Date(2019).toString(),
-              lastModificationDate: new Date().toString(),
-              status: 'active',
-            },
-            {
-              owners: ['me', 'you'],
-              tags: ['test', 'testing'],
-              title: 'second test',
-              description: 'we are testing',
-              creationDate: new Date(2019).toString(),
-              lastModificationDate: new Date().toString(),
-            },
-          ],
-        },
+  const mocks = {
+    request: { query: ExperimentsDocument, variables },
+    result: {
+      data: {
+        experiments: [
+          {
+            owners: ['me'],
+            tags: ['hi'],
+            title: 'first test',
+            creationDate: new Date(2019).toString(),
+            lastModificationDate: new Date().toString(),
+            status: 'active',
+          },
+          {
+            owners: ['me', 'you'],
+            tags: ['test', 'testing'],
+            title: 'second test',
+            description: 'we are testing',
+            creationDate: new Date(2019).toString(),
+            lastModificationDate: new Date().toString(),
+          },
+        ],
       },
     },
-  ];
+  };
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={[mocks]} addTypename={false}>
       <Experiments />
     </MockedProvider>,
   );
@@ -58,17 +56,13 @@ it('Search for columns', async () => {
 });
 
 it('Error display', async () => {
-  const mocks = [
-    {
-      request: { query: ExperimentsDocument, variables },
-      result: {
-        errors: [new GraphQLError('Error!')],
-      },
-    },
-  ];
+  const mocks = {
+    request: { query: ExperimentsDocument, variables },
+    result: { errors: [new GraphQLError('Error!')] },
+  };
 
   render(
-    <MockedProvider mocks={mocks} addTypename={false}>
+    <MockedProvider mocks={[mocks]} addTypename={false}>
       <Experiments />
     </MockedProvider>,
   );

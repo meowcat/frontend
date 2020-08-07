@@ -23,7 +23,6 @@ const FormInput = ({ label, name, type }: InputProps) => {
         className={`block w-full pr-12 form-input pl-7 sm:text-sm sm:leading-5 ${
           hasError ? 'border-red-600' : ''
         }`}
-        name={name}
         aria-label={label}
         type={type || 'text'}
       />

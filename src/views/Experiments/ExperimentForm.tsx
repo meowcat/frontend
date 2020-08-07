@@ -62,9 +62,16 @@ const ExperimentForm = ({ closeModal }: Props) => {
     closeModal(true);
   };
 
+  const initialValues = {
+    title: null,
+    description: null,
+    tags: [],
+    status: null,
+  };
+
   return (
     <ModalForm
-      initialValues={{ title: '', tags: [], status: '' }}
+      initialValues={initialValues}
       validationSchema={Yup.object({
         title: Yup.string().required('Required'),
         status: Yup.string().required('Required'),

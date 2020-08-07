@@ -21,7 +21,6 @@ export type AdditionalEntityFields = {
   type?: Maybe<Scalars['String']>;
 };
 
-
 export type Pagination = {
   totalCount: Scalars['Int'];
 };
@@ -46,83 +45,68 @@ export type Query = {
   signin?: Maybe<AuthUser>;
 };
 
-
 export type QueryComponentArgs = {
   _id: Scalars['String'];
 };
-
 
 export type QueryComponentsArgs = {
   page: Scalars['Int'];
   filters: ComponentFilters;
 };
 
-
 export type QueryExperimentArgs = {
   _id: Scalars['String'];
 };
-
 
 export type QueryExperimentsArgs = {
   page: Scalars['Int'];
   filters: ExperimentFilters;
 };
 
-
 export type QueryFileArgs = {
   _id: Scalars['String'];
 };
-
 
 export type QueryFilesArgs = {
   page: Scalars['Int'];
   filters: FileFilters;
 };
 
-
 export type QueryKindArgs = {
   _id: Scalars['String'];
 };
-
 
 export type QueryKindsArgs = {
   page: Scalars['Int'];
   filters: KindFilters;
 };
 
-
 export type QueryMeasurementArgs = {
   _id: Scalars['String'];
 };
-
 
 export type QueryMeasurementsArgs = {
   page: Scalars['Int'];
   filters: MeasurementFilters;
 };
 
-
 export type QuerySampleArgs = {
   _id: Scalars['String'];
 };
-
 
 export type QuerySamplesArgs = {
   page: Scalars['Int'];
   filters: SampleFilters;
 };
 
-
 export type QueryUserArgs = {
   _id: Scalars['String'];
 };
-
 
 export type QueryUsersArgs = {
   page: Scalars['Int'];
   filters: UserFilters;
 };
-
 
 export type QuerySigninArgs = {
   email: Scalars['String'];
@@ -157,131 +141,108 @@ export type Mutation = {
   updateUser: User;
 };
 
-
 export type MutationCreateComponentArgs = {
   component: ComponentInput;
 };
-
 
 export type MutationUpdateComponentArgs = {
   _id: Scalars['String'];
   component: ComponentInput;
 };
 
-
 export type MutationAppendComponentInputArgs = {
   parentId: Scalars['String'];
   childId: Scalars['String'];
 };
-
 
 export type MutationAppendComponentOutputArgs = {
   parentId: Scalars['String'];
   childId: Scalars['String'];
 };
 
-
 export type MutationRemoveComponentInputArgs = {
   parentId: Scalars['String'];
   childId: Scalars['String'];
 };
-
 
 export type MutationRemoveComponentOutputArgs = {
   parentId: Scalars['String'];
   childId: Scalars['String'];
 };
 
-
 export type MutationCreateExperimentArgs = {
   experiment: ExperimentInput;
 };
-
 
 export type MutationUpdateExperimentArgs = {
   _id: Scalars['String'];
   experiment: ExperimentInput;
 };
 
-
 export type MutationAppendExperimentInputArgs = {
   sampleId: Scalars['String'];
   experimentId: Scalars['String'];
 };
-
 
 export type MutationAppendExperimentOutputArgs = {
   sampleId: Scalars['String'];
   experimentId: Scalars['String'];
 };
 
-
 export type MutationAppendExperimentComponentArgs = {
   componentId: Scalars['String'];
   experimentId: Scalars['String'];
 };
 
-
 export type MutationCreateFileArgs = {
   file: FileInput;
 };
 
-
 export type MutationCreateKindArgs = {
   kind: KindInput;
 };
-
 
 export type MutationUpdateKindArgs = {
   _id: Scalars['String'];
   kind: KindInput;
 };
 
-
 export type MutationCreateMeasurementArgs = {
   measurement: MeasurementInput;
 };
-
 
 export type MutationUpdateMeasurementArgs = {
   _id: Scalars['String'];
   measurement: MeasurementInput;
 };
 
-
 export type MutationAppendMeasurementComponentArgs = {
   componentId: Scalars['String'];
   measurementId: Scalars['String'];
 };
 
-
 export type MutationCreateSampleArgs = {
   sample: SampleInput;
 };
-
 
 export type MutationUpdateSampleArgs = {
   _id: Scalars['String'];
   sample: SampleInput;
 };
 
-
 export type MutationAppendSampleComponentArgs = {
   componentId: Scalars['String'];
   sampleId: Scalars['String'];
 };
-
 
 export type MutationAppendSampleMeasurementArgs = {
   measurementId: Scalars['String'];
   sampleId: Scalars['String'];
 };
 
-
 export type MutationCreateUserArgs = {
   user: UserInput;
 };
-
 
 export type MutationUpdateUserArgs = {
   _id: Scalars['String'];
@@ -376,7 +337,6 @@ export type File = {
   _id: Scalars['String'];
   filename: Scalars['String'];
   hashname: Scalars['String'];
-  encoding: Scalars['String'];
   mimetype: Scalars['String'];
   creationDate: Scalars['String'];
   signedUrl: Scalars['String'];
@@ -385,7 +345,6 @@ export type File = {
 export type FileInput = {
   filename: Scalars['String'];
   hashname: Scalars['String'];
-  encoding: Scalars['String'];
   mimetype: Scalars['String'];
 };
 
@@ -524,7 +483,7 @@ export type SamplePage = Pagination & {
 export enum Role {
   Admin = 'ADMIN',
   GroupAdmin = 'GROUP_ADMIN',
-  Member = 'MEMBER'
+  Member = 'MEMBER',
 }
 
 export type User = {
@@ -565,74 +524,208 @@ export type UserPage = Pagination & {
 
 export enum CacheControlScope {
   Public = 'PUBLIC',
-  Private = 'PRIVATE'
+  Private = 'PRIVATE',
 }
 
+export type FileFieldsFragment = { __typename?: 'File' } & Pick<
+  File,
+  '_id' | 'filename' | 'hashname' | 'mimetype' | 'creationDate' | 'signedUrl'
+>;
 
-export type ExperimentFieldsFragment = (
-  { __typename?: 'Experiment' }
-  & Pick<Experiment, '_id' | 'owners' | 'tags' | 'title' | 'description' | 'creationDate' | 'lastModificationDate'>
-  & { status?: Maybe<Array<(
-    { __typename?: 'Status' }
-    & Pick<Status, 'kind'>
-  )>> }
-);
+export type FileQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type FileQuery = { __typename?: 'Query' } & {
+  file?: Maybe<{ __typename?: 'File' } & FileFieldsFragment>;
+};
+
+export type CreateFileMutationVariables = Exact<{
+  file: FileInput;
+}>;
+
+export type CreateFileMutation = { __typename?: 'Mutation' } & {
+  createFile?: Maybe<{ __typename?: 'File' } & FileFieldsFragment>;
+};
+
+export type ExperimentFieldsFragment = { __typename?: 'Experiment' } & Pick<
+  Experiment,
+  | '_id'
+  | 'owners'
+  | 'tags'
+  | 'title'
+  | 'description'
+  | 'creationDate'
+  | 'lastModificationDate'
+> & { status?: Maybe<Array<{ __typename?: 'Status' } & Pick<Status, 'kind'>>> };
 
 export type ExperimentsQueryVariables = Exact<{
   page: Scalars['Int'];
   filters: ExperimentFilters;
 }>;
 
-
-export type ExperimentsQuery = (
-  { __typename?: 'Query' }
-  & { experiments?: Maybe<(
-    { __typename?: 'ExperimentPage' }
-    & Pick<ExperimentPage, 'totalCount'>
-    & { result?: Maybe<Array<(
-      { __typename?: 'Experiment' }
-      & ExperimentFieldsFragment
-    )>> }
-  )> }
-);
+export type ExperimentsQuery = { __typename?: 'Query' } & {
+  experiments?: Maybe<
+    { __typename?: 'ExperimentPage' } & Pick<ExperimentPage, 'totalCount'> & {
+        result?: Maybe<
+          Array<{ __typename?: 'Experiment' } & ExperimentFieldsFragment>
+        >;
+      }
+  >;
+};
 
 export type CreateExperimentMutationVariables = Exact<{
   experiment: ExperimentInput;
 }>;
 
+export type CreateExperimentMutation = { __typename?: 'Mutation' } & {
+  createExperiment?: Maybe<
+    { __typename?: 'Experiment' } & ExperimentFieldsFragment
+  >;
+};
 
-export type CreateExperimentMutation = (
-  { __typename?: 'Mutation' }
-  & { createExperiment?: Maybe<(
-    { __typename?: 'Experiment' }
-    & ExperimentFieldsFragment
-  )> }
-);
-
+export const FileFieldsFragmentDoc = gql`
+  fragment FileFields on File {
+    _id
+    filename
+    hashname
+    mimetype
+    creationDate
+    signedUrl
+  }
+`;
 export const ExperimentFieldsFragmentDoc = gql`
-    fragment ExperimentFields on Experiment {
-  _id
-  owners
-  tags
-  title
-  description
-  creationDate
-  lastModificationDate
-  status {
-    kind
-  }
-}
-    `;
-export const ExperimentsDocument = gql`
-    query experiments($page: Int!, $filters: ExperimentFilters!) {
-  experiments(page: $page, filters: $filters) {
-    result {
-      ...ExperimentFields
+  fragment ExperimentFields on Experiment {
+    _id
+    owners
+    tags
+    title
+    description
+    creationDate
+    lastModificationDate
+    status {
+      kind
     }
-    totalCount
   }
+`;
+export const FileDocument = gql`
+  query file($id: String!) {
+    file(_id: $id) {
+      ...FileFields
+    }
+  }
+  ${FileFieldsFragmentDoc}
+`;
+
+/**
+ * __useFileQuery__
+ *
+ * To run a query within a React component, call `useFileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFileQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFileQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useFileQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    FileQuery,
+    FileQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useQuery<FileQuery, FileQueryVariables>(
+    FileDocument,
+    baseOptions,
+  );
 }
-    ${ExperimentFieldsFragmentDoc}`;
+export function useFileLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    FileQuery,
+    FileQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useLazyQuery<FileQuery, FileQueryVariables>(
+    FileDocument,
+    baseOptions,
+  );
+}
+export type FileQueryHookResult = ReturnType<typeof useFileQuery>;
+export type FileLazyQueryHookResult = ReturnType<typeof useFileLazyQuery>;
+export type FileQueryResult = ApolloReactCommon.QueryResult<
+  FileQuery,
+  FileQueryVariables
+>;
+export function refetchFileQuery(variables?: FileQueryVariables) {
+  return { query: FileDocument, variables: variables };
+}
+export const CreateFileDocument = gql`
+  mutation createFile($file: FileInput!) {
+    createFile(file: $file) {
+      ...FileFields
+    }
+  }
+  ${FileFieldsFragmentDoc}
+`;
+export type CreateFileMutationFn = ApolloReactCommon.MutationFunction<
+  CreateFileMutation,
+  CreateFileMutationVariables
+>;
+
+/**
+ * __useCreateFileMutation__
+ *
+ * To run a mutation, you first call `useCreateFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFileMutation, { data, loading, error }] = useCreateFileMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *   },
+ * });
+ */
+export function useCreateFileMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreateFileMutation,
+    CreateFileMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<
+    CreateFileMutation,
+    CreateFileMutationVariables
+  >(CreateFileDocument, baseOptions);
+}
+export type CreateFileMutationHookResult = ReturnType<
+  typeof useCreateFileMutation
+>;
+export type CreateFileMutationResult = ApolloReactCommon.MutationResult<
+  CreateFileMutation
+>;
+export type CreateFileMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateFileMutation,
+  CreateFileMutationVariables
+>;
+export const ExperimentsDocument = gql`
+  query experiments($page: Int!, $filters: ExperimentFilters!) {
+    experiments(page: $page, filters: $filters) {
+      result {
+        ...ExperimentFields
+      }
+      totalCount
+    }
+  }
+  ${ExperimentFieldsFragmentDoc}
+`;
 
 /**
  * __useExperimentsQuery__
@@ -651,26 +744,51 @@ export const ExperimentsDocument = gql`
  *   },
  * });
  */
-export function useExperimentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ExperimentsQuery, ExperimentsQueryVariables>) {
-        return ApolloReactHooks.useQuery<ExperimentsQuery, ExperimentsQueryVariables>(ExperimentsDocument, baseOptions);
-      }
-export function useExperimentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ExperimentsQuery, ExperimentsQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<ExperimentsQuery, ExperimentsQueryVariables>(ExperimentsDocument, baseOptions);
-        }
-export type ExperimentsQueryHookResult = ReturnType<typeof useExperimentsQuery>;
-export type ExperimentsLazyQueryHookResult = ReturnType<typeof useExperimentsLazyQuery>;
-export type ExperimentsQueryResult = ApolloReactCommon.QueryResult<ExperimentsQuery, ExperimentsQueryVariables>;
-export function refetchExperimentsQuery(variables?: ExperimentsQueryVariables) {
-      return { query: ExperimentsDocument, variables: variables }
-    }
-export const CreateExperimentDocument = gql`
-    mutation createExperiment($experiment: ExperimentInput!) {
-  createExperiment(experiment: $experiment) {
-    ...ExperimentFields
-  }
+export function useExperimentsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    ExperimentsQuery,
+    ExperimentsQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useQuery<ExperimentsQuery, ExperimentsQueryVariables>(
+    ExperimentsDocument,
+    baseOptions,
+  );
 }
-    ${ExperimentFieldsFragmentDoc}`;
-export type CreateExperimentMutationFn = ApolloReactCommon.MutationFunction<CreateExperimentMutation, CreateExperimentMutationVariables>;
+export function useExperimentsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    ExperimentsQuery,
+    ExperimentsQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useLazyQuery<
+    ExperimentsQuery,
+    ExperimentsQueryVariables
+  >(ExperimentsDocument, baseOptions);
+}
+export type ExperimentsQueryHookResult = ReturnType<typeof useExperimentsQuery>;
+export type ExperimentsLazyQueryHookResult = ReturnType<
+  typeof useExperimentsLazyQuery
+>;
+export type ExperimentsQueryResult = ApolloReactCommon.QueryResult<
+  ExperimentsQuery,
+  ExperimentsQueryVariables
+>;
+export function refetchExperimentsQuery(variables?: ExperimentsQueryVariables) {
+  return { query: ExperimentsDocument, variables: variables };
+}
+export const CreateExperimentDocument = gql`
+  mutation createExperiment($experiment: ExperimentInput!) {
+    createExperiment(experiment: $experiment) {
+      ...ExperimentFields
+    }
+  }
+  ${ExperimentFieldsFragmentDoc}
+`;
+export type CreateExperimentMutationFn = ApolloReactCommon.MutationFunction<
+  CreateExperimentMutation,
+  CreateExperimentMutationVariables
+>;
 
 /**
  * __useCreateExperimentMutation__
@@ -689,9 +807,24 @@ export type CreateExperimentMutationFn = ApolloReactCommon.MutationFunction<Crea
  *   },
  * });
  */
-export function useCreateExperimentMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateExperimentMutation, CreateExperimentMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateExperimentMutation, CreateExperimentMutationVariables>(CreateExperimentDocument, baseOptions);
-      }
-export type CreateExperimentMutationHookResult = ReturnType<typeof useCreateExperimentMutation>;
-export type CreateExperimentMutationResult = ApolloReactCommon.MutationResult<CreateExperimentMutation>;
-export type CreateExperimentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateExperimentMutation, CreateExperimentMutationVariables>;
+export function useCreateExperimentMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreateExperimentMutation,
+    CreateExperimentMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<
+    CreateExperimentMutation,
+    CreateExperimentMutationVariables
+  >(CreateExperimentDocument, baseOptions);
+}
+export type CreateExperimentMutationHookResult = ReturnType<
+  typeof useCreateExperimentMutation
+>;
+export type CreateExperimentMutationResult = ApolloReactCommon.MutationResult<
+  CreateExperimentMutation
+>;
+export type CreateExperimentMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateExperimentMutation,
+  CreateExperimentMutationVariables
+>;

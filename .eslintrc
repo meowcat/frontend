@@ -5,9 +5,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "env": {
-    "jest": true
-  },
+  "env": { "jest": true },
   "extends": ["react-app", "plugin:jsx-a11y/strict"],
   "rules": {
     "react/no-unused-prop-types": 1,
@@ -39,13 +37,7 @@
       }
     ],
     "react/jsx-no-duplicate-props": ["error", { "ignoreCase": true }],
-    "react/jsx-pascal-case": [
-      "error",
-      {
-        "allowAllCaps": true,
-        "ignore": []
-      }
-    ],
+    "react/jsx-pascal-case": ["error", { "allowAllCaps": true, "ignore": [] }],
     "react/no-danger": "warn",
     "react/no-deprecated": ["error"],
     "react/no-direct-mutation-state": "off",
@@ -67,9 +59,7 @@
           "everything-else",
           "rendering"
         ],
-        "groups": {
-          "rendering": ["/^render.+$/", "render"]
-        }
+        "groups": { "rendering": ["/^render.+$/", "render"] }
       }
     ],
     "react/jsx-filename-extension": [
@@ -80,9 +70,7 @@
     "react/no-array-index-key": "error",
     "react/require-default-props": [
       "error",
-      {
-        "forbidDefaultForRequired": true
-      }
+      { "forbidDefaultForRequired": true }
     ],
     "react/default-props-match-prop-types": [
       "error",

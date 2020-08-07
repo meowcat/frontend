@@ -1,0 +1,20 @@
+fragment FileFields on File {
+  _id
+  filename
+  hashname
+  mimetype
+  creationDate
+  signedUrl
+}
+
+query file($id: String!) {
+  file(_id: $id) {
+    ...FileFields
+  }
+}
+
+mutation createFile($file: FileInput!) {
+  createFile(file: $file) {
+    ...FileFields
+  }
+}
