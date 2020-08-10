@@ -1,0 +1,24 @@
+fragment SampleFields on Sample {
+  _id
+  codeId
+  title
+  description
+  status {
+    kind
+  }
+}
+
+query samples($page: Int!, $filters: SampleFilters!) {
+  samples(page: $page, filters: $filters) {
+    result {
+      ...SampleFields
+    }
+    totalCount
+  }
+}
+
+mutation createSample($sample: SampleInput!) {
+  createSample(sample: $sample) {
+    ...SampleFields
+  }
+}

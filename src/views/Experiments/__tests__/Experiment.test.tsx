@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql';
 import { render, screen, wait } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 
-import Experiments from '../index';
+import Experiments from '../Experiment';
 import { ExperimentsDocument } from '../../../utils/generated';
 
 const variables = { page: 0, filters: {} };

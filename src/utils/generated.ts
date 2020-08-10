@@ -584,6 +584,30 @@ export type CreateExperimentMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
+export type SampleFieldsFragment = { __typename?: 'Sample' } & Pick<
+  Sample,
+  '_id' | 'codeId' | 'title' | 'description'
+> & { status?: Maybe<Array<{ __typename?: 'Status' } & Pick<Status, 'kind'>>> };
+
+export type SamplesQueryVariables = Exact<{
+  page: Scalars['Int'];
+  filters: SampleFilters;
+}>;
+
+export type SamplesQuery = { __typename?: 'Query' } & {
+  samples: { __typename?: 'SamplePage' } & Pick<SamplePage, 'totalCount'> & {
+      result?: Maybe<Array<{ __typename?: 'Sample' } & SampleFieldsFragment>>;
+    };
+};
+
+export type CreateSampleMutationVariables = Exact<{
+  sample: SampleInput;
+}>;
+
+export type CreateSampleMutation = { __typename?: 'Mutation' } & {
+  createSample?: Maybe<{ __typename?: 'Sample' } & SampleFieldsFragment>;
+};
+
 export const FileFieldsFragmentDoc = gql`
   fragment FileFields on File {
     _id
@@ -603,6 +627,17 @@ export const ExperimentFieldsFragmentDoc = gql`
     description
     creationDate
     lastModificationDate
+    status {
+      kind
+    }
+  }
+`;
+export const SampleFieldsFragmentDoc = gql`
+  fragment SampleFields on Sample {
+    _id
+    codeId
+    title
+    description
     status {
       kind
     }
@@ -827,4 +862,115 @@ export type CreateExperimentMutationResult = ApolloReactCommon.MutationResult<
 export type CreateExperimentMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateExperimentMutation,
   CreateExperimentMutationVariables
+>;
+export const SamplesDocument = gql`
+  query samples($page: Int!, $filters: SampleFilters!) {
+    samples(page: $page, filters: $filters) {
+      result {
+        ...SampleFields
+      }
+      totalCount
+    }
+  }
+  ${SampleFieldsFragmentDoc}
+`;
+
+/**
+ * __useSamplesQuery__
+ *
+ * To run a query within a React component, call `useSamplesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSamplesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSamplesQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useSamplesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    SamplesQuery,
+    SamplesQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useQuery<SamplesQuery, SamplesQueryVariables>(
+    SamplesDocument,
+    baseOptions,
+  );
+}
+export function useSamplesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    SamplesQuery,
+    SamplesQueryVariables
+  >,
+) {
+  return ApolloReactHooks.useLazyQuery<SamplesQuery, SamplesQueryVariables>(
+    SamplesDocument,
+    baseOptions,
+  );
+}
+export type SamplesQueryHookResult = ReturnType<typeof useSamplesQuery>;
+export type SamplesLazyQueryHookResult = ReturnType<typeof useSamplesLazyQuery>;
+export type SamplesQueryResult = ApolloReactCommon.QueryResult<
+  SamplesQuery,
+  SamplesQueryVariables
+>;
+export function refetchSamplesQuery(variables?: SamplesQueryVariables) {
+  return { query: SamplesDocument, variables: variables };
+}
+export const CreateSampleDocument = gql`
+  mutation createSample($sample: SampleInput!) {
+    createSample(sample: $sample) {
+      ...SampleFields
+    }
+  }
+  ${SampleFieldsFragmentDoc}
+`;
+export type CreateSampleMutationFn = ApolloReactCommon.MutationFunction<
+  CreateSampleMutation,
+  CreateSampleMutationVariables
+>;
+
+/**
+ * __useCreateSampleMutation__
+ *
+ * To run a mutation, you first call `useCreateSampleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSampleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSampleMutation, { data, loading, error }] = useCreateSampleMutation({
+ *   variables: {
+ *      sample: // value for 'sample'
+ *   },
+ * });
+ */
+export function useCreateSampleMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreateSampleMutation,
+    CreateSampleMutationVariables
+  >,
+) {
+  return ApolloReactHooks.useMutation<
+    CreateSampleMutation,
+    CreateSampleMutationVariables
+  >(CreateSampleDocument, baseOptions);
+}
+export type CreateSampleMutationHookResult = ReturnType<
+  typeof useCreateSampleMutation
+>;
+export type CreateSampleMutationResult = ApolloReactCommon.MutationResult<
+  CreateSampleMutation
+>;
+export type CreateSampleMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateSampleMutation,
+  CreateSampleMutationVariables
 >;

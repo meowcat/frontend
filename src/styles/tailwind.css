@@ -2259,6 +2259,10 @@ video {
   border-bottom-left-radius: 0.375rem;
 }
 
+.border-dashed {
+  border-style: dashed;
+}
+
 .border {
   border-width: 1px;
 }

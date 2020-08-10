@@ -1,37 +1,23 @@
 import React, { useState } from 'react';
 
-import ExperimentForm from './ExperimentForm';
+import SampleForm from './SampleForm';
 
 import Error from '../../components/Error';
-
 import Table, { TableColumn } from '../../components/Table';
-import { Experiment, useExperimentsQuery } from '../../utils/generated';
+
+import { Sample, useSamplesQuery } from '../../utils/generated';
 import { getNumberUrlParam } from '../../utils/filters';
 
-function renderTags(tags: string[]) {
-  if (!tags) return null;
-  return tags.map((tag) => (
-    <span
-      key={tag}
-      className="inline-flex px-2 mr-1 text-xs font-semibold leading-5 text-blue-800 uppercase whitespace-no-wrap bg-blue-100 rounded-full"
-    >
-      {tag}
-    </span>
-  ));
-}
-
-function renderDate(initialDate: string) {
-  const date = new Date(initialDate);
-  return initialDate
-    ? `${date.getDate()} / ${1 + date.getMonth()} / ${date.getFullYear()}`
-    : 'None';
-}
-
 function stringSorter(key: 'codeId' | 'title') {
-  return (a: Experiment, b: Experiment) => a[key].localeCompare(b[key]);
+  return (a: Sample, b: Sample) => a[key].localeCompare(b[key]);
 }
 
-const columns: TableColumn<Experiment>[] = [
+const columns: TableColumn<Sample>[] = [
+  {
+    key: 'codeId',
+    title: 'Code',
+    sorter: stringSorter('codeId'),
+  },
   {
     key: 'title',
     title: 'Title',
@@ -42,34 +28,14 @@ const columns: TableColumn<Experiment>[] = [
     title: 'Description',
   },
   {
-    key: 'owners',
-    title: 'Owners',
-    render: renderTags,
-  },
-  {
-    key: 'tags',
-    title: 'Tags',
-    render: renderTags,
-  },
-  {
-    key: 'creationDate',
-    title: 'Creation date',
-    render: renderDate,
-  },
-  {
-    key: 'lastModificationDate',
-    title: 'Last modification date',
-    render: renderDate,
-  },
-  {
     key: 'status',
     title: 'Status',
-    render: (value: Experiment['status']) => (value ? value[0].kind : null),
+    render: (value: Sample['status']) => (value ? value[0].kind : null),
   },
 ];
 
-const Experiments = (_: any) => {
-  const { loading, error, data, refetch } = useExperimentsQuery({
+const Samples = (_: any) => {
+  const { loading, error, data, refetch } = useSamplesQuery({
     variables: { page: getNumberUrlParam('page'), filters: {} },
   });
   const [visible, setVisible] = useState(false);
@@ -80,16 +46,16 @@ const Experiments = (_: any) => {
     if (reload) refetch();
     setVisible(false);
   };
-  const { result = [], totalCount = 0 } = data?.experiments || {};
+  const { result = [], totalCount = 0 } = data?.samples || {};
   return (
     <div>
-      {visible ? <ExperimentForm closeModal={closeModal} /> : null}
+      {visible ? <SampleForm closeModal={closeModal} /> : null}
       <header className="bg-white shadow">
         <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="lg:flex lg:items-center lg:justify-between">
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
-                Experiments
+                Samples
               </h2>
             </div>
             <div className="flex mt-5 lg:mt-0 lg:ml-4">
@@ -110,7 +76,7 @@ const Experiments = (_: any) => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Add new experiment
+                  Add new sample
                 </button>
               </span>
             </div>
@@ -119,7 +85,7 @@ const Experiments = (_: any) => {
       </header>
       <main>
         <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <Table<Experiment>
+          <Table<Sample>
             columns={columns}
             data={result || []}
             totalCount={totalCount}
@@ -130,4 +96,4 @@ const Experiments = (_: any) => {
     </div>
   );
 };
-export default Experiments;
+export default Samples;

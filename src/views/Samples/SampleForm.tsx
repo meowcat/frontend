@@ -2,96 +2,85 @@ import React from 'react';
 import * as Yup from 'yup';
 
 import {
-  useCreateExperimentMutation,
-  ExperimentsDocument,
-  ExperimentPage,
+  useCreateSampleMutation,
+  SamplesDocument,
+  SamplePage,
 } from '../../utils/generated';
 import { getNumberUrlParam } from '../../utils/filters';
 import ModalForm from '../../components/ModalForm';
 import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
-import FormTags from '../../components/FormTags';
 
 interface Props {
   closeModal: (reload: boolean) => void;
 }
 
-interface ExperimentInput {
+interface SampleInput {
   title: string;
   description?: string;
   tags: string[];
   status: string;
 }
 
-const ExperimentForm = ({ closeModal }: Props) => {
-  const [createExperiment] = useCreateExperimentMutation({
+const SampleForm = ({ closeModal }: Props) => {
+  const [createSample] = useCreateSampleMutation({
     update(cache, { data }) {
-      const newExperiment = data?.createExperiment;
-      const response: { experiments: ExperimentPage } | null = cache.readQuery({
-        query: ExperimentsDocument,
+      const newSample = data?.createSample;
+      const response: { samples: SamplePage } | null = cache.readQuery({
+        query: SamplesDocument,
         variables: { page: getNumberUrlParam('page'), filters: {} },
       });
-      const experiments = response?.experiments?.result || [];
+      const samples = response?.samples?.result || [];
       cache.writeQuery({
-        query: ExperimentsDocument,
+        query: SamplesDocument,
         data: {
-          experiments: {
-            result: [...experiments, newExperiment],
-            totalCount: (response?.experiments?.totalCount || 0) + 1,
+          samples: {
+            result: [...samples, newSample],
+            totalCount: (response?.samples?.totalCount || 0) + 1,
           },
         },
       });
     },
   });
 
-  const onSubmit = (data: ExperimentInput) => {
-    const experiment = {
+  const onSubmit = (data: SampleInput) => {
+    const sample = {
       ...data,
-      owners: ['me'],
       status: { kind: data.status, date: new Date().toString() },
     };
-    createExperiment({
-      variables: { experiment },
+    createSample({
+      variables: { sample },
       optimisticResponse: {
         __typename: 'Mutation',
-        createExperiment: {
-          __typename: 'Experiment',
+        createSample: {
+          __typename: 'Sample',
           _id: 'optimistic',
-          title: experiment.title,
-          description: experiment.description,
-          owners: experiment.owners,
-          status: [experiment.status],
-          creationDate: new Date().toString(),
+          codeId: 'optimistic',
+          title: sample.title,
+          description: sample.description,
+          status: [sample.status],
         },
       },
     });
     closeModal(true);
   };
 
-  const initialValues = {
-    title: null,
-    description: null,
-    tags: [],
-    status: null,
-  };
-
   return (
     <ModalForm
-      initialValues={initialValues}
+      initialValues={{ title: '', description: '', status: '' }}
       validationSchema={Yup.object({
         title: Yup.string().required('Required'),
         status: Yup.string().required('Required'),
       })}
       onSubmit={onSubmit}
       onCancel={() => closeModal(false)}
-      title="Create experiment"
+      title="Create sample"
     >
       <FormInput label="Title" name="title" />
       <FormInput label="Description" name="description" />
-      <FormTags label="Tags" name="tags" />
       <FormSelect label="Status" name="status" items={['active', 'inactive']} />
     </ModalForm>
   );
 };
 
-export default ExperimentForm;
+export default SampleForm;
