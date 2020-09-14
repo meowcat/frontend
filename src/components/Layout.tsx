@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, Redirect } from '@reach/router';
 import Header from './Header';
 
 interface LayoutProps {
@@ -11,11 +11,14 @@ const LayoutComponent = ({
   children,
   routes,
   path,
-}: LayoutProps & RouteComponentProps) => (
-  <>
-    <Header routes={routes} path={path} />
-    {children}
-  </>
-);
+}: LayoutProps & RouteComponentProps) =>
+  localStorage.getItem('token') ? (
+    <>
+      <Header routes={routes} path={path} />
+      {children}
+    </>
+  ) : (
+    <Redirect to="/signin" noThrow />
+  );
 
 export default LayoutComponent;

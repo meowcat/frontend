@@ -45,9 +45,10 @@ const ExperimentForm = ({ closeModal }: Props) => {
   });
 
   const onSubmit = (data: ExperimentInput) => {
+    const userId = '123456789012';
     const experiment = {
       ...data,
-      owners: ['me'],
+      owners: [userId],
       status: { kind: data.status, date: new Date().toString() },
     };
     createExperiment({
@@ -59,7 +60,7 @@ const ExperimentForm = ({ closeModal }: Props) => {
           _id: 'optimistic',
           title: experiment.title,
           description: experiment.description,
-          owners: experiment.owners,
+          owners: experiment.owners.map((_id) => ({ _id, name: 'me' })),
           status: [experiment.status],
           creationDate: new Date().toString(),
         },
@@ -79,8 +80,8 @@ const ExperimentForm = ({ closeModal }: Props) => {
     <ModalForm
       initialValues={initialValues}
       validationSchema={Yup.object({
-        title: Yup.string().required('Required'),
-        status: Yup.string().required('Required'),
+        title: Yup.string().required('Required').nullable(),
+        status: Yup.string().required('Required').nullable(),
       })}
       onSubmit={onSubmit}
       onCancel={() => closeModal(false)}

@@ -2,22 +2,21 @@ import React, { useState } from 'react';
 
 import ExperimentForm from './ExperimentForm';
 
+import Tag from '../../components/Tag';
 import Error from '../../components/Error';
 import Table, { TableColumn } from '../../components/Table';
 
-import { Experiment, useExperimentsQuery } from '../../utils/generated';
+import {
+  User,
+  Experiment,
+  useExperimentsQuery,
+  ExperimentFieldsFragment,
+} from '../../utils/generated';
 import { getNumberUrlParam } from '../../utils/filters';
 
 function renderTags(tags: string[]) {
   if (!tags) return null;
-  return tags.map((tag) => (
-    <span
-      key={tag}
-      className="inline-flex px-2 mr-1 text-xs font-semibold leading-5 text-blue-800 uppercase whitespace-no-wrap bg-blue-100 rounded-full"
-    >
-      {tag}
-    </span>
-  ));
+  return tags.map((tag) => <Tag key={tag}>{tag}</Tag>);
 }
 
 function renderDate(initialDate: string) {
@@ -27,11 +26,17 @@ function renderDate(initialDate: string) {
     : 'None';
 }
 
+function renderOwners(owners: Array<null | User>) {
+  const reducer = (acc: React.ReactNode[], curr: null | User) =>
+    curr ? [...acc, <Tag key={curr._id}>{curr.name}</Tag>] : acc;
+  return owners.reduce(reducer, []);
+}
+
 function stringSorter(key: 'codeId' | 'title') {
   return (a: Experiment, b: Experiment) => a[key].localeCompare(b[key]);
 }
 
-const columns: TableColumn<Experiment>[] = [
+const columns: TableColumn<ExperimentFieldsFragment>[] = [
   {
     key: 'title',
     title: 'Title',
@@ -44,7 +49,7 @@ const columns: TableColumn<Experiment>[] = [
   {
     key: 'owners',
     title: 'Owners',
-    render: renderTags,
+    render: renderOwners,
   },
   {
     key: 'tags',
@@ -119,7 +124,7 @@ const Experiments = (_: any) => {
       </header>
       <main>
         <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <Table<Experiment>
+          <Table<ExperimentFieldsFragment>
             columns={columns}
             data={result || []}
             totalCount={totalCount}

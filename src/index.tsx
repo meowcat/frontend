@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import { Router } from '@reach/router';
 import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 
+import Home from './views/Home';
 import Experiments from './views/Experiments/Experiment';
 import Samples from './views/Samples/Sample';
-import Home from './views/Home';
+import Signin from './views/User/Signin';
+import Signup from './views/User/Signup';
 import Layout from './components/Layout';
 
 import * as serviceWorker from './serviceWorker';
@@ -26,6 +28,9 @@ const menuRoutes = routes.map(({ path, name }) => ({ path, name }));
 const App = () => (
   <ApolloProvider client={client}>
     <Router>
+      <Signin path="/signin" />
+      <Signup path="/signup" />
+
       {routes.map(({ Component, path }) => (
         <Layout key={path} path={path} routes={menuRoutes}>
           <Component path="/" />

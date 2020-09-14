@@ -1,6 +1,9 @@
 fragment ExperimentFields on Experiment {
   _id
-  owners
+  owners {
+    _id
+    name
+  }
   tags
   title
   description

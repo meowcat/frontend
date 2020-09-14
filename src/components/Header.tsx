@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from '@reach/router';
+import { Link, useNavigate } from '@reach/router';
 
 interface HeaderProps {
   routes: Array<{ name: string; path: string }>;
@@ -8,6 +8,14 @@ interface HeaderProps {
 
 const Header = ({ routes, path }: HeaderProps) => {
   const [toogle, setToogle] = useState(false);
+  const [userMenu, setUserMenu] = useState(false);
+  const navigate = useNavigate();
+
+  const signOut = () => {
+    localStorage.clear();
+    navigate('/singin');
+  };
+
   return (
     <nav className="bg-gray-800">
       <div className="px-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -64,13 +72,70 @@ const Header = ({ routes, path }: HeaderProps) => {
                     to={key}
                     className={
                       path === key
-                        ? 'px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md focus:outline-none focus:text-white focus:bg-gray-700'
-                        : 'px-3 py-2 text-sm font-medium leading-5 text-gray-300 transition duration-150 ease-in-out rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700'
+                        ? 'mx-1 px-3 py-2 text-sm font-medium text-white bg-gray-900 rounded-md focus:outline-none focus:text-white focus:bg-gray-700 '
+                        : 'mx-1 px-3 py-2 text-sm font-medium leading-5 text-gray-300 transition duration-150 ease-in-out rounded-md hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700'
                     }
                   >
                     {name}
                   </Link>
                 ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Profile dropdown */}
+          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            <div className="relative ml-3">
+              <div>
+                <button
+                  className="p-1 text-gray-400 transition duration-150 ease-in-out border-4 border-transparent rounded-full hover:text-white focus:outline-none focus:text-white focus:bg-gray-700"
+                  id="user-menu"
+                  aria-label="User menu"
+                  aria-haspopup="true"
+                  onClick={() => setUserMenu(!userMenu)}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div
+                className={`${
+                  userMenu ? 'absolute' : 'hidden'
+                } right-0 w-48 origin-top-right rounded-md mt-1 shadow-lg`}
+              >
+                <div
+                  className="py-1 bg-white rounded-md shadow-xs"
+                  role="menu"
+                  aria-orientation="vertical"
+                  aria-labelledby="user-menu"
+                >
+                  <Link
+                    to="/profile"
+                    role="menuitem"
+                    className="block px-4 py-2 text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                  >
+                    My profile
+                  </Link>
+                  <button
+                    className="block w-full px-4 py-2 text-sm leading-5 text-left text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus:bg-gray-100"
+                    role="menuitem"
+                    onClick={signOut}
+                  >
+                    Sign out
+                  </button>
+                </div>
               </div>
             </div>
           </div>

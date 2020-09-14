@@ -69,8 +69,8 @@ const SampleForm = ({ closeModal }: Props) => {
     <ModalForm
       initialValues={{ title: '', description: '', status: '' }}
       validationSchema={Yup.object({
-        title: Yup.string().required('Required'),
-        status: Yup.string().required('Required'),
+        title: Yup.string().required('Required').nullable(),
+        status: Yup.string().required('Required').nullable(),
       })}
       onSubmit={onSubmit}
       onCancel={() => closeModal(false)}
