@@ -22,6 +22,19 @@ export type AdditionalEntityFields = {
 };
 
 
+export type Status = {
+  __typename?: 'Status';
+  kind: Scalars['String'];
+  date: Scalars['String'];
+  user?: Maybe<User>;
+};
+
+export type StatusInput = {
+  kind: Scalars['String'];
+  date?: Maybe<Scalars['String']>;
+  user?: Maybe<Scalars['String']>;
+};
+
 export type Pagination = {
   totalCount: Scalars['Int'];
 };
@@ -29,32 +42,19 @@ export type Pagination = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
-  component?: Maybe<Component>;
-  components: ComponentPage;
   experiment?: Maybe<Experiment>;
   experiments?: Maybe<ExperimentPage>;
   file?: Maybe<File>;
   files?: Maybe<Array<File>>;
-  kind?: Maybe<Kind>;
-  kinds: KindPage;
   measurement?: Maybe<Measurement>;
   measurements: MeasurementPage;
+  project?: Maybe<Project>;
+  projects?: Maybe<ProjectPage>;
   sample?: Maybe<Sample>;
   samples: SamplePage;
   user?: Maybe<User>;
   users: UserPage;
   signin?: Maybe<AuthUser>;
-};
-
-
-export type QueryComponentArgs = {
-  _id: Scalars['String'];
-};
-
-
-export type QueryComponentsArgs = {
-  page: Scalars['Int'];
-  filters: ComponentFilters;
 };
 
 
@@ -80,17 +80,6 @@ export type QueryFilesArgs = {
 };
 
 
-export type QueryKindArgs = {
-  _id: Scalars['String'];
-};
-
-
-export type QueryKindsArgs = {
-  page: Scalars['Int'];
-  filters: KindFilters;
-};
-
-
 export type QueryMeasurementArgs = {
   _id: Scalars['String'];
 };
@@ -99,6 +88,17 @@ export type QueryMeasurementArgs = {
 export type QueryMeasurementsArgs = {
   page: Scalars['Int'];
   filters: MeasurementFilters;
+};
+
+
+export type QueryProjectArgs = {
+  _id: Scalars['String'];
+};
+
+
+export type QueryProjectsArgs = {
+  page: Scalars['Int'];
+  filters: ProjectFilters;
 };
 
 
@@ -132,65 +132,23 @@ export type QuerySigninArgs = {
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']>;
-  createComponent?: Maybe<Component>;
-  updateComponent?: Maybe<Component>;
-  appendComponentInput?: Maybe<Component>;
-  appendComponentOutput?: Maybe<Component>;
-  removeComponentInput?: Maybe<Component>;
-  removeComponentOutput?: Maybe<Component>;
   createExperiment?: Maybe<Experiment>;
   updateExperiment?: Maybe<Experiment>;
   appendExperimentInput?: Maybe<Experiment>;
   appendExperimentOutput?: Maybe<Experiment>;
-  appendExperimentComponent?: Maybe<Component>;
   createFile?: Maybe<File>;
-  createKind: Kind;
-  updateKind: Kind;
   createMeasurement?: Maybe<Measurement>;
   updateMeasurement?: Maybe<Measurement>;
-  appendMeasurementComponent?: Maybe<Component>;
+  appendMeasurementAttachment?: Maybe<File>;
+  createProject?: Maybe<Project>;
+  updateProject?: Maybe<Project>;
   createSample?: Maybe<Sample>;
   updateSample?: Maybe<Sample>;
-  appendSampleComponent?: Maybe<Component>;
+  appendSampleAttachment?: Maybe<File>;
   appendSampleMeasurement?: Maybe<Measurement>;
   createUser: AuthUser;
   updateUser: User;
   appendUserGroup: User;
-};
-
-
-export type MutationCreateComponentArgs = {
-  component: ComponentInput;
-};
-
-
-export type MutationUpdateComponentArgs = {
-  _id: Scalars['String'];
-  component: ComponentInput;
-};
-
-
-export type MutationAppendComponentInputArgs = {
-  parentId: Scalars['String'];
-  childId: Scalars['String'];
-};
-
-
-export type MutationAppendComponentOutputArgs = {
-  parentId: Scalars['String'];
-  childId: Scalars['String'];
-};
-
-
-export type MutationRemoveComponentInputArgs = {
-  parentId: Scalars['String'];
-  childId: Scalars['String'];
-};
-
-
-export type MutationRemoveComponentOutputArgs = {
-  parentId: Scalars['String'];
-  childId: Scalars['String'];
 };
 
 
@@ -217,25 +175,8 @@ export type MutationAppendExperimentOutputArgs = {
 };
 
 
-export type MutationAppendExperimentComponentArgs = {
-  componentId: Scalars['String'];
-  experimentId: Scalars['String'];
-};
-
-
 export type MutationCreateFileArgs = {
   file: FileInput;
-};
-
-
-export type MutationCreateKindArgs = {
-  kind: KindInput;
-};
-
-
-export type MutationUpdateKindArgs = {
-  _id: Scalars['String'];
-  kind: KindInput;
 };
 
 
@@ -250,9 +191,20 @@ export type MutationUpdateMeasurementArgs = {
 };
 
 
-export type MutationAppendMeasurementComponentArgs = {
-  componentId: Scalars['String'];
+export type MutationAppendMeasurementAttachmentArgs = {
+  fileId: Scalars['String'];
   measurementId: Scalars['String'];
+};
+
+
+export type MutationCreateProjectArgs = {
+  project: ProjectInput;
+};
+
+
+export type MutationUpdateProjectArgs = {
+  _id: Scalars['String'];
+  project: ProjectInput;
 };
 
 
@@ -267,8 +219,8 @@ export type MutationUpdateSampleArgs = {
 };
 
 
-export type MutationAppendSampleComponentArgs = {
-  componentId: Scalars['String'];
+export type MutationAppendSampleAttachmentArgs = {
+  fileId: Scalars['String'];
   sampleId: Scalars['String'];
 };
 
@@ -295,80 +247,32 @@ export type MutationAppendUserGroupArgs = {
   group: Scalars['String'];
 };
 
-export type Component = {
-  __typename?: 'Component';
-  _id: Scalars['String'];
-  kind?: Maybe<Kind>;
-  parent?: Maybe<Scalars['String']>;
-  content?: Maybe<Scalars['JSON']>;
-  input?: Maybe<Array<Component>>;
-  output?: Maybe<Array<Component>>;
-};
-
-export type ComponentInput = {
-  parent?: Maybe<Scalars['String']>;
-  kind?: Maybe<Scalars['String']>;
-  content?: Maybe<Scalars['JSON']>;
-};
-
-export type ComponentFilters = {
-  kind: Scalars['String'];
-};
-
-export type ComponentPage = Pagination & {
-  __typename?: 'ComponentPage';
-  result?: Maybe<Array<Component>>;
-  totalCount: Scalars['Int'];
-};
-
-export type Status = {
-  __typename?: 'Status';
-  kind: Scalars['String'];
-  date?: Maybe<Scalars['String']>;
-};
-
-export type StatusInput = {
-  kind: Scalars['String'];
-  date: Scalars['String'];
-};
-
 export type Experiment = {
   __typename?: 'Experiment';
   _id: Scalars['String'];
   codeId: Scalars['String'];
-  owners?: Maybe<Array<User>>;
-  tags?: Maybe<Array<Scalars['String']>>;
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  creationDate: Scalars['String'];
-  lastModificationDate?: Maybe<Scalars['String']>;
   status?: Maybe<Array<Status>>;
   meta?: Maybe<Scalars['JSON']>;
   input?: Maybe<Array<Sample>>;
   output?: Maybe<Array<Sample>>;
-  components?: Maybe<Array<Component>>;
 };
 
 export type ExperimentInput = {
   codeId?: Maybe<Scalars['String']>;
-  owners?: Maybe<Array<Scalars['String']>>;
-  tags?: Maybe<Array<Scalars['String']>>;
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  creationDate?: Maybe<Scalars['String']>;
-  lastModificationDate?: Maybe<Scalars['String']>;
   status?: Maybe<StatusInput>;
   meta?: Maybe<Scalars['JSON']>;
 };
 
 export type ExperimentFilters = {
-  owners?: Maybe<Array<Scalars['String']>>;
-  tags?: Maybe<Array<Scalars['String']>>;
+  codeId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  creationDate?: Maybe<Scalars['String']>;
-  lastModificationDate?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
+  statusDate?: Maybe<Scalars['String']>;
 };
 
 export type ExperimentPage = Pagination & {
@@ -385,6 +289,7 @@ export type File = {
   mimetype: Scalars['String'];
   creationDate: Scalars['String'];
   signedUrl: Scalars['String'];
+  parent?: Maybe<Scalars['String']>;
 };
 
 export type FileInput = {
@@ -398,53 +303,21 @@ export type FileFilters = {
   mimetype?: Maybe<Scalars['String']>;
 };
 
-export type Kind = {
-  __typename?: 'Kind';
-  _id: Scalars['String'];
-  name: Scalars['String'];
-  path?: Maybe<Array<Scalars['String']>>;
-  description?: Maybe<Scalars['String']>;
-  schema?: Maybe<Scalars['JSON']>;
-};
-
-export type KindInput = {
-  name?: Maybe<Scalars['String']>;
-  path?: Maybe<Array<Scalars['String']>>;
-  description?: Maybe<Scalars['String']>;
-  schema?: Maybe<Scalars['JSON']>;
-};
-
-export type KindFilters = {
-  name?: Maybe<Scalars['String']>;
-  path?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-};
-
-export type KindPage = Pagination & {
-  __typename?: 'KindPage';
-  result?: Maybe<Array<Kind>>;
-  totalCount: Scalars['Int'];
-};
-
 export type Measurement = {
   __typename?: 'Measurement';
   _id: Scalars['String'];
-  sample?: Maybe<Scalars['String']>;
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   status?: Maybe<Array<Status>>;
-  startTime?: Maybe<Scalars['String']>;
-  endTime?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['JSON']>;
-  components?: Maybe<Array<Component>>;
+  attachement?: Maybe<Array<File>>;
+  sample?: Maybe<Scalars['String']>;
 };
 
 export type MeasurementInput = {
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   status?: Maybe<StatusInput>;
-  startTime?: Maybe<Scalars['String']>;
-  endTime?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['JSON']>;
 };
 
@@ -452,13 +325,47 @@ export type MeasurementFilters = {
   title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
-  startTime?: Maybe<Scalars['String']>;
-  endTime?: Maybe<Scalars['String']>;
+  statusDate?: Maybe<Scalars['String']>;
 };
 
 export type MeasurementPage = Pagination & {
   __typename?: 'MeasurementPage';
   result?: Maybe<Array<Measurement>>;
+  totalCount: Scalars['Int'];
+};
+
+export type Project = {
+  __typename?: 'Project';
+  _id: Scalars['String'];
+  title: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  owners?: Maybe<Array<User>>;
+  tags?: Maybe<Array<Scalars['String']>>;
+  status?: Maybe<Array<Status>>;
+  meta?: Maybe<Scalars['JSON']>;
+};
+
+export type ProjectInput = {
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  owner?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+  status?: Maybe<StatusInput>;
+  meta?: Maybe<Scalars['JSON']>;
+};
+
+export type ProjectFilters = {
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  owner?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+  status?: Maybe<Scalars['String']>;
+  statusDate?: Maybe<Scalars['String']>;
+};
+
+export type ProjectPage = Pagination & {
+  __typename?: 'ProjectPage';
+  result?: Maybe<Array<Project>>;
   totalCount: Scalars['Int'];
 };
 
@@ -499,11 +406,12 @@ export type Sample = {
   description?: Maybe<Scalars['String']>;
   comments?: Maybe<Array<SampleComment>>;
   summary?: Maybe<Array<SampleSummary>>;
-  components?: Maybe<Array<Component>>;
+  attachements?: Maybe<Array<File>>;
   measurements?: Maybe<Array<Measurement>>;
 };
 
 export type SampleInput = {
+  codeId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   status?: Maybe<StatusInput>;
   description?: Maybe<Scalars['String']>;
@@ -512,8 +420,10 @@ export type SampleInput = {
 };
 
 export type SampleFilters = {
+  codeId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
+  statusDate?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   summary?: Maybe<Scalars['String']>;
@@ -606,13 +516,14 @@ export type CreateFileMutation = (
 
 export type ExperimentFieldsFragment = (
   { __typename?: 'Experiment' }
-  & Pick<Experiment, '_id' | 'tags' | 'title' | 'description' | 'creationDate' | 'lastModificationDate'>
-  & { owners?: Maybe<Array<(
-    { __typename?: 'User' }
-    & Pick<User, '_id' | 'name'>
-  )>>, status?: Maybe<Array<(
+  & Pick<Experiment, '_id' | 'codeId' | 'title' | 'description'>
+  & { status?: Maybe<Array<(
     { __typename?: 'Status' }
-    & Pick<Status, 'kind'>
+    & Pick<Status, 'kind' | 'date'>
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'name'>
+    )> }
   )>> }
 );
 
@@ -644,6 +555,97 @@ export type CreateExperimentMutation = (
   & { createExperiment?: Maybe<(
     { __typename?: 'Experiment' }
     & ExperimentFieldsFragment
+  )> }
+);
+
+export type ProjectFieldsFragment = (
+  { __typename?: 'Project' }
+  & Pick<Project, '_id' | 'title' | 'description' | 'tags'>
+  & { owners?: Maybe<Array<(
+    { __typename?: 'User' }
+    & Pick<User, '_id' | 'name'>
+  )>>, status?: Maybe<Array<(
+    { __typename?: 'Status' }
+    & Pick<Status, 'kind' | 'date'>
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'name'>
+    )> }
+  )>> }
+);
+
+export type ProjectsQueryVariables = Exact<{
+  page: Scalars['Int'];
+  filters: ProjectFilters;
+}>;
+
+
+export type ProjectsQuery = (
+  { __typename?: 'Query' }
+  & { projects?: Maybe<(
+    { __typename?: 'ProjectPage' }
+    & Pick<ProjectPage, 'totalCount'>
+    & { result?: Maybe<Array<(
+      { __typename?: 'Project' }
+      & ProjectFieldsFragment
+    )>> }
+  )> }
+);
+
+export type CreateProjectMutationVariables = Exact<{
+  project: ProjectInput;
+}>;
+
+
+export type CreateProjectMutation = (
+  { __typename?: 'Mutation' }
+  & { createProject?: Maybe<(
+    { __typename?: 'Project' }
+    & ProjectFieldsFragment
+  )> }
+);
+
+export type SampleFieldsFragment = (
+  { __typename?: 'Sample' }
+  & Pick<Sample, '_id' | 'codeId' | 'title' | 'description'>
+  & { status?: Maybe<Array<(
+    { __typename?: 'Status' }
+    & Pick<Status, 'kind' | 'date'>
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, '_id' | 'name'>
+    )> }
+  )>> }
+);
+
+export type SamplesQueryVariables = Exact<{
+  page: Scalars['Int'];
+  filters: SampleFilters;
+}>;
+
+
+export type SamplesQuery = (
+  { __typename?: 'Query' }
+  & { samples: (
+    { __typename?: 'SamplePage' }
+    & Pick<SamplePage, 'totalCount'>
+    & { result?: Maybe<Array<(
+      { __typename?: 'Sample' }
+      & SampleFieldsFragment
+    )>> }
+  ) }
+);
+
+export type CreateSampleMutationVariables = Exact<{
+  sample: SampleInput;
+}>;
+
+
+export type CreateSampleMutation = (
+  { __typename?: 'Mutation' }
+  & { createSample?: Maybe<(
+    { __typename?: 'Sample' }
+    & SampleFieldsFragment
   )> }
 );
 
@@ -687,46 +689,6 @@ export type CreateUserMutation = (
   ) }
 );
 
-export type SampleFieldsFragment = (
-  { __typename?: 'Sample' }
-  & Pick<Sample, '_id' | 'codeId' | 'title' | 'description'>
-  & { status?: Maybe<Array<(
-    { __typename?: 'Status' }
-    & Pick<Status, 'kind'>
-  )>> }
-);
-
-export type SamplesQueryVariables = Exact<{
-  page: Scalars['Int'];
-  filters: SampleFilters;
-}>;
-
-
-export type SamplesQuery = (
-  { __typename?: 'Query' }
-  & { samples: (
-    { __typename?: 'SamplePage' }
-    & Pick<SamplePage, 'totalCount'>
-    & { result?: Maybe<Array<(
-      { __typename?: 'Sample' }
-      & SampleFieldsFragment
-    )>> }
-  ) }
-);
-
-export type CreateSampleMutationVariables = Exact<{
-  sample: SampleInput;
-}>;
-
-
-export type CreateSampleMutation = (
-  { __typename?: 'Mutation' }
-  & { createSample?: Maybe<(
-    { __typename?: 'Sample' }
-    & SampleFieldsFragment
-  )> }
-);
-
 export const FileFieldsFragmentDoc = gql`
     fragment FileFields on File {
   _id
@@ -740,26 +702,37 @@ export const FileFieldsFragmentDoc = gql`
 export const ExperimentFieldsFragmentDoc = gql`
     fragment ExperimentFields on Experiment {
   _id
+  codeId
+  title
+  description
+  status {
+    kind
+    date
+    user {
+      _id
+      name
+    }
+  }
+}
+    `;
+export const ProjectFieldsFragmentDoc = gql`
+    fragment ProjectFields on Project {
+  _id
+  title
+  description
   owners {
     _id
     name
   }
   tags
-  title
-  description
-  creationDate
-  lastModificationDate
   status {
     kind
+    date
+    user {
+      _id
+      name
+    }
   }
-}
-    `;
-export const UserFieldsFragmentDoc = gql`
-    fragment UserFields on User {
-  _id
-  name
-  email
-  role
 }
     `;
 export const SampleFieldsFragmentDoc = gql`
@@ -770,7 +743,20 @@ export const SampleFieldsFragmentDoc = gql`
   description
   status {
     kind
+    date
+    user {
+      _id
+      name
+    }
   }
+}
+    `;
+export const UserFieldsFragmentDoc = gql`
+    fragment UserFields on User {
+  _id
+  name
+  email
+  role
 }
     `;
 export const FileDocument = gql`
@@ -913,6 +899,150 @@ export function useCreateExperimentMutation(baseOptions?: ApolloReactHooks.Mutat
 export type CreateExperimentMutationHookResult = ReturnType<typeof useCreateExperimentMutation>;
 export type CreateExperimentMutationResult = ApolloReactCommon.MutationResult<CreateExperimentMutation>;
 export type CreateExperimentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateExperimentMutation, CreateExperimentMutationVariables>;
+export const ProjectsDocument = gql`
+    query projects($page: Int!, $filters: ProjectFilters!) {
+  projects(page: $page, filters: $filters) {
+    result {
+      ...ProjectFields
+    }
+    totalCount
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useProjectsQuery__
+ *
+ * To run a query within a React component, call `useProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useProjectsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
+        return ApolloReactHooks.useQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, baseOptions);
+      }
+export function useProjectsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ProjectsQuery, ProjectsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ProjectsQuery, ProjectsQueryVariables>(ProjectsDocument, baseOptions);
+        }
+export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
+export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
+export type ProjectsQueryResult = ApolloReactCommon.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
+export function refetchProjectsQuery(variables?: ProjectsQueryVariables) {
+      return { query: ProjectsDocument, variables: variables }
+    }
+export const CreateProjectDocument = gql`
+    mutation createProject($project: ProjectInput!) {
+  createProject(project: $project) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+export type CreateProjectMutationFn = ApolloReactCommon.MutationFunction<CreateProjectMutation, CreateProjectMutationVariables>;
+
+/**
+ * __useCreateProjectMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProjectMutation, { data, loading, error }] = useCreateProjectMutation({
+ *   variables: {
+ *      project: // value for 'project'
+ *   },
+ * });
+ */
+export function useCreateProjectMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateProjectMutation, CreateProjectMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, baseOptions);
+      }
+export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
+export type CreateProjectMutationResult = ApolloReactCommon.MutationResult<CreateProjectMutation>;
+export type CreateProjectMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
+export const SamplesDocument = gql`
+    query samples($page: Int!, $filters: SampleFilters!) {
+  samples(page: $page, filters: $filters) {
+    result {
+      ...SampleFields
+    }
+    totalCount
+  }
+}
+    ${SampleFieldsFragmentDoc}`;
+
+/**
+ * __useSamplesQuery__
+ *
+ * To run a query within a React component, call `useSamplesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSamplesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSamplesQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useSamplesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<SamplesQuery, SamplesQueryVariables>) {
+        return ApolloReactHooks.useQuery<SamplesQuery, SamplesQueryVariables>(SamplesDocument, baseOptions);
+      }
+export function useSamplesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<SamplesQuery, SamplesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<SamplesQuery, SamplesQueryVariables>(SamplesDocument, baseOptions);
+        }
+export type SamplesQueryHookResult = ReturnType<typeof useSamplesQuery>;
+export type SamplesLazyQueryHookResult = ReturnType<typeof useSamplesLazyQuery>;
+export type SamplesQueryResult = ApolloReactCommon.QueryResult<SamplesQuery, SamplesQueryVariables>;
+export function refetchSamplesQuery(variables?: SamplesQueryVariables) {
+      return { query: SamplesDocument, variables: variables }
+    }
+export const CreateSampleDocument = gql`
+    mutation createSample($sample: SampleInput!) {
+  createSample(sample: $sample) {
+    ...SampleFields
+  }
+}
+    ${SampleFieldsFragmentDoc}`;
+export type CreateSampleMutationFn = ApolloReactCommon.MutationFunction<CreateSampleMutation, CreateSampleMutationVariables>;
+
+/**
+ * __useCreateSampleMutation__
+ *
+ * To run a mutation, you first call `useCreateSampleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSampleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSampleMutation, { data, loading, error }] = useCreateSampleMutation({
+ *   variables: {
+ *      sample: // value for 'sample'
+ *   },
+ * });
+ */
+export function useCreateSampleMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateSampleMutation, CreateSampleMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateSampleMutation, CreateSampleMutationVariables>(CreateSampleDocument, baseOptions);
+      }
+export type CreateSampleMutationHookResult = ReturnType<typeof useCreateSampleMutation>;
+export type CreateSampleMutationResult = ApolloReactCommon.MutationResult<CreateSampleMutation>;
+export type CreateSampleMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateSampleMutation, CreateSampleMutationVariables>;
 export const SigninDocument = gql`
     query signin($email: String!, $password: String!) {
   signin(email: $email, password: $password) {
@@ -988,75 +1118,3 @@ export function useCreateUserMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = ApolloReactCommon.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
-export const SamplesDocument = gql`
-    query samples($page: Int!, $filters: SampleFilters!) {
-  samples(page: $page, filters: $filters) {
-    result {
-      ...SampleFields
-    }
-    totalCount
-  }
-}
-    ${SampleFieldsFragmentDoc}`;
-
-/**
- * __useSamplesQuery__
- *
- * To run a query within a React component, call `useSamplesQuery` and pass it any options that fit your needs.
- * When your component renders, `useSamplesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSamplesQuery({
- *   variables: {
- *      page: // value for 'page'
- *      filters: // value for 'filters'
- *   },
- * });
- */
-export function useSamplesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<SamplesQuery, SamplesQueryVariables>) {
-        return ApolloReactHooks.useQuery<SamplesQuery, SamplesQueryVariables>(SamplesDocument, baseOptions);
-      }
-export function useSamplesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<SamplesQuery, SamplesQueryVariables>) {
-          return ApolloReactHooks.useLazyQuery<SamplesQuery, SamplesQueryVariables>(SamplesDocument, baseOptions);
-        }
-export type SamplesQueryHookResult = ReturnType<typeof useSamplesQuery>;
-export type SamplesLazyQueryHookResult = ReturnType<typeof useSamplesLazyQuery>;
-export type SamplesQueryResult = ApolloReactCommon.QueryResult<SamplesQuery, SamplesQueryVariables>;
-export function refetchSamplesQuery(variables?: SamplesQueryVariables) {
-      return { query: SamplesDocument, variables: variables }
-    }
-export const CreateSampleDocument = gql`
-    mutation createSample($sample: SampleInput!) {
-  createSample(sample: $sample) {
-    ...SampleFields
-  }
-}
-    ${SampleFieldsFragmentDoc}`;
-export type CreateSampleMutationFn = ApolloReactCommon.MutationFunction<CreateSampleMutation, CreateSampleMutationVariables>;
-
-/**
- * __useCreateSampleMutation__
- *
- * To run a mutation, you first call `useCreateSampleMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSampleMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSampleMutation, { data, loading, error }] = useCreateSampleMutation({
- *   variables: {
- *      sample: // value for 'sample'
- *   },
- * });
- */
-export function useCreateSampleMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateSampleMutation, CreateSampleMutationVariables>) {
-        return ApolloReactHooks.useMutation<CreateSampleMutation, CreateSampleMutationVariables>(CreateSampleDocument, baseOptions);
-      }
-export type CreateSampleMutationHookResult = ReturnType<typeof useCreateSampleMutation>;
-export type CreateSampleMutationResult = ApolloReactCommon.MutationResult<CreateSampleMutation>;
-export type CreateSampleMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateSampleMutation, CreateSampleMutationVariables>;

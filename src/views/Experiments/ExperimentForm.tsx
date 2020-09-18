@@ -10,16 +10,15 @@ import { getNumberUrlParam } from '../../utils/filters';
 import ModalForm from '../../components/ModalForm';
 import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
-import FormTags from '../../components/FormTags';
 
 interface Props {
   closeModal: (reload: boolean) => void;
 }
 
 interface ExperimentInput {
+  codeId?: string;
   title: string;
   description?: string;
-  tags: string[];
   status: string;
 }
 
@@ -45,12 +44,16 @@ const ExperimentForm = ({ closeModal }: Props) => {
   });
 
   const onSubmit = (data: ExperimentInput) => {
-    const userId = '123456789012';
+    const userId = localStorage.getItem('user_id');
+    if (!userId) {
+      console.error('User id not saved');
+      return null;
+    }
     const experiment = {
       ...data,
-      owners: [userId],
-      status: { kind: data.status, date: new Date().toString() },
+      status: { kind: data.status, date: new Date().toString(), user: userId },
     };
+    const user = { _id: userId, name: 'user' };
     createExperiment({
       variables: { experiment },
       optimisticResponse: {
@@ -58,11 +61,10 @@ const ExperimentForm = ({ closeModal }: Props) => {
         createExperiment: {
           __typename: 'Experiment',
           _id: 'optimistic',
+          codeId: experiment.codeId || 'None',
           title: experiment.title,
           description: experiment.description,
-          owners: experiment.owners.map((_id) => ({ _id, name: 'me' })),
-          status: [experiment.status],
-          creationDate: new Date().toString(),
+          status: [{ ...experiment.status, user }],
         },
       },
     });
@@ -70,9 +72,9 @@ const ExperimentForm = ({ closeModal }: Props) => {
   };
 
   const initialValues = {
-    title: null,
-    description: null,
-    tags: [],
+    codeId: '',
+    title: '',
+    description: '',
     status: null,
   };
 
@@ -87,9 +89,9 @@ const ExperimentForm = ({ closeModal }: Props) => {
       onCancel={() => closeModal(false)}
       title="Create experiment"
     >
+      <FormInput label="Code" name="codeId" />
       <FormInput label="Title" name="title" />
       <FormInput label="Description" name="description" />
-      <FormTags label="Tags" name="tags" />
       <FormSelect label="Status" name="status" items={['active', 'inactive']} />
     </ModalForm>
   );

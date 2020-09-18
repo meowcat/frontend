@@ -45,9 +45,9 @@ export default function Table<T>({
 }: TableProps<T>) {
   const content = data.map((value, index) => (
     <tr key={`row_${index}`}>
-      {columns.map(({ key, render }) => (
+      {columns.map(({ key, render, title }) => (
         <td
-          key={key as string}
+          key={title}
           className="px-6 py-4 whitespace-no-wrap border-b border-gray-200"
         >
           {render ? render(value[key]) : value[key]}

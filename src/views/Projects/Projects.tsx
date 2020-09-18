@@ -1,32 +1,29 @@
 import React, { useState } from 'react';
 
-import ExperimentForm from './ExperimentForm';
+import ProjectForm from './ProjectForm';
 
 import Error from '../../components/Error';
 import Table, { TableColumn } from '../../components/Table';
 
 import {
-  Experiment,
-  useExperimentsQuery,
-  ExperimentFieldsFragment,
+  Project,
+  ProjectFieldsFragment,
+  useProjectsQuery,
 } from '../../utils/generated';
 import { getNumberUrlParam } from '../../utils/filters';
 import {
   renderCreationDate,
   renderLastDate,
   renderLastStatus,
+  renderOwners,
+  renderTags,
 } from '../../utils/tableRenders';
 
-function stringSorter(key: 'codeId' | 'title') {
-  return (a: Experiment, b: Experiment) => a[key].localeCompare(b[key]);
+function stringSorter(key: 'title') {
+  return (a: Project, b: Project) => a[key].localeCompare(b[key]);
 }
 
-const columns: TableColumn<ExperimentFieldsFragment>[] = [
-  {
-    key: 'codeId',
-    title: 'Code',
-    sorter: stringSorter('title'),
-  },
+const columns: TableColumn<ProjectFieldsFragment>[] = [
   {
     key: 'title',
     title: 'Title',
@@ -35,6 +32,16 @@ const columns: TableColumn<ExperimentFieldsFragment>[] = [
   {
     key: 'description',
     title: 'Description',
+  },
+  {
+    key: 'owners',
+    title: 'Owners',
+    render: renderOwners,
+  },
+  {
+    key: 'tags',
+    title: 'Tags',
+    render: renderTags,
   },
   {
     key: 'status',
@@ -53,8 +60,8 @@ const columns: TableColumn<ExperimentFieldsFragment>[] = [
   },
 ];
 
-const Experiments = (_: any) => {
-  const { loading, error, data, refetch } = useExperimentsQuery({
+const Projects = (_: any) => {
+  const { loading, error, data, refetch } = useProjectsQuery({
     variables: { page: getNumberUrlParam('page'), filters: {} },
   });
   const [visible, setVisible] = useState(false);
@@ -65,16 +72,16 @@ const Experiments = (_: any) => {
     if (reload) refetch();
     setVisible(false);
   };
-  const { result = [], totalCount = 0 } = data?.experiments || {};
+  const { result = [], totalCount = 0 } = data?.projects || {};
   return (
     <div>
-      {visible ? <ExperimentForm closeModal={closeModal} /> : null}
+      {visible ? <ProjectForm closeModal={closeModal} /> : null}
       <header className="bg-white shadow">
         <div className="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="lg:flex lg:items-center lg:justify-between">
             <div className="flex-1 min-w-0">
               <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:leading-9 sm:truncate">
-                Experiments
+                Projects
               </h2>
             </div>
             <div className="flex mt-5 lg:mt-0 lg:ml-4">
@@ -95,7 +102,7 @@ const Experiments = (_: any) => {
                       clipRule="evenodd"
                     />
                   </svg>
-                  Add new experiment
+                  Add new project
                 </button>
               </span>
             </div>
@@ -104,7 +111,7 @@ const Experiments = (_: any) => {
       </header>
       <main>
         <div className="py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <Table<ExperimentFieldsFragment>
+          <Table<ProjectFieldsFragment>
             columns={columns}
             data={result || []}
             totalCount={totalCount}
@@ -115,4 +122,4 @@ const Experiments = (_: any) => {
     </div>
   );
 };
-export default Experiments;
+export default Projects;

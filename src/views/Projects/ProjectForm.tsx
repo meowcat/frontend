@@ -2,79 +2,81 @@ import React from 'react';
 import * as Yup from 'yup';
 
 import {
-  useCreateSampleMutation,
-  SamplesDocument,
-  SamplePage,
+  useCreateProjectMutation,
+  ProjectsDocument,
+  ProjectPage,
 } from '../../utils/generated';
 import { getNumberUrlParam } from '../../utils/filters';
 import ModalForm from '../../components/ModalForm';
 import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
+import FormTags from '../../components/FormTags';
 
 interface Props {
   closeModal: (reload: boolean) => void;
 }
 
-interface SampleInput {
-  codeId?: string;
+interface ProjectInput {
   title: string;
   description?: string;
+  tags: string[];
   status: string;
 }
 
-const SampleForm = ({ closeModal }: Props) => {
-  const [createSample] = useCreateSampleMutation({
+const ProjectForm = ({ closeModal }: Props) => {
+  const [createProject] = useCreateProjectMutation({
     update(cache, { data }) {
-      const newSample = data?.createSample;
-      const response: { samples: SamplePage } | null = cache.readQuery({
-        query: SamplesDocument,
+      const newProject = data?.createProject;
+      const response: { projects: ProjectPage } | null = cache.readQuery({
+        query: ProjectsDocument,
         variables: { page: getNumberUrlParam('page'), filters: {} },
       });
-      const samples = response?.samples?.result || [];
+      const projects = response?.projects?.result || [];
       cache.writeQuery({
-        query: SamplesDocument,
+        query: ProjectsDocument,
         data: {
-          samples: {
-            result: [...samples, newSample],
-            totalCount: (response?.samples?.totalCount || 0) + 1,
+          projects: {
+            result: [...projects, newProject],
+            totalCount: (response?.projects?.totalCount || 0) + 1,
           },
         },
       });
     },
   });
 
-  const onSubmit = (data: SampleInput) => {
+  const onSubmit = (data: ProjectInput) => {
     const userId = localStorage.getItem('user_id');
     if (!userId) {
       console.error('User id not saved');
       return null;
     }
-    const sample = {
+    const project = {
       ...data,
+      owner: userId,
       status: { kind: data.status, date: new Date().toString(), user: userId },
     };
     const user = { _id: userId, name: 'user' };
-    createSample({
-      variables: { sample },
+    createProject({
+      variables: { project },
       optimisticResponse: {
         __typename: 'Mutation',
-        createSample: {
-          __typename: 'Sample',
+        createProject: {
+          __typename: 'Project',
           _id: 'optimistic',
-          codeId: 'optimistic',
-          title: sample.title,
-          description: sample.description,
-          status: [{ ...sample.status, user }],
+          title: project.title,
+          description: project.description,
+          status: [{ ...project.status, user }],
         },
       },
     });
     closeModal(true);
   };
+
   const initialValues = {
-    codeId: '',
     title: '',
     description: '',
-    status: null,
+    tags: [],
+    status: '',
   };
 
   return (
@@ -86,14 +88,14 @@ const SampleForm = ({ closeModal }: Props) => {
       })}
       onSubmit={onSubmit}
       onCancel={() => closeModal(false)}
-      title="Create sample"
+      title="Create project"
     >
-      <FormInput label="Code" name="codeId" />
       <FormInput label="Title" name="title" />
       <FormInput label="Description" name="description" />
+      <FormTags label="Tags" name="tags" />
       <FormSelect label="Status" name="status" items={['active', 'inactive']} />
     </ModalForm>
   );
 };
 
-export default SampleForm;
+export default ProjectForm;

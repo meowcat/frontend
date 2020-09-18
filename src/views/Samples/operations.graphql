@@ -5,6 +5,11 @@ fragment SampleFields on Sample {
   description
   status {
     kind
+    date
+    user {
+      _id
+      name
+    }
   }
 }
 
