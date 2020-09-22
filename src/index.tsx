@@ -8,6 +8,7 @@ import Experiments from './views/Experiments/Experiment';
 import Samples from './views/Samples/Sample';
 import Signin from './views/User/Signin';
 import Signup from './views/User/Signup';
+import Notebook from './views/Notebook/Notebook';
 import Layout from './components/Layout';
 
 import * as serviceWorker from './serviceWorker';
@@ -37,6 +38,10 @@ const App = () => (
           <Component path="/" />
         </Layout>
       ))}
+
+      <Layout path="/notebook" routes={menuRoutes}>
+        <Notebook path="/" />
+      </Layout>
     </Router>
   </ApolloProvider>
 );
