@@ -13,7 +13,7 @@ const Header = ({ routes, path }: HeaderProps) => {
 
   const signOut = () => {
     localStorage.clear();
-    navigate('/singin');
+    navigate('/signin');
   };
 
   return (
