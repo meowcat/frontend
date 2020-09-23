@@ -5,11 +5,13 @@ import {
   useCreateExperimentMutation,
   ExperimentsDocument,
   ExperimentPage,
+  useProjectsByOwnerQuery,
 } from '../../utils/generated';
 import { getNumberUrlParam } from '../../utils/filters';
 import ModalForm from '../../components/ModalForm';
 import FormInput from '../../components/FormInput';
 import FormSelect from '../../components/FormSelect';
+import FormSelectQuery from '../../components/FormSelectQuery';
 
 interface Props {
   closeModal: (reload: boolean) => void;
@@ -23,19 +25,37 @@ interface ExperimentInput {
 }
 
 const ExperimentForm = ({ closeModal }: Props) => {
+  // Gets user id from local storage
+  const userId = localStorage.getItem('user_id');
+
+  // Gets list of user projects
+  const { loading, error, data } = useProjectsByOwnerQuery({
+    variables: { ownerId: userId || '' },
+  });
+  const userProjects =
+    data?.projectsByOwner?.map(({ title, _id }) => ({
+      key: _id,
+      value: title,
+    })) || [];
+
   const [createExperiment] = useCreateExperimentMutation({
+    // Update cache from response
     update(cache, { data }) {
-      const newExperiment = data?.createExperiment;
+      // Get usual response from cache
       const response: { experiments: ExperimentPage } | null = cache.readQuery({
         query: ExperimentsDocument,
         variables: { page: getNumberUrlParam('page'), filters: {} },
       });
+
+      const newExperiment = data?.createExperiment;
       const experiments = response?.experiments?.result || [];
+
+      // Adds new experiment at the beginnig
       cache.writeQuery({
         query: ExperimentsDocument,
         data: {
           experiments: {
-            result: [...experiments, newExperiment],
+            result: [newExperiment, ...experiments],
             totalCount: (response?.experiments?.totalCount || 0) + 1,
           },
         },
@@ -44,11 +64,13 @@ const ExperimentForm = ({ closeModal }: Props) => {
   });
 
   const onSubmit = (data: ExperimentInput) => {
-    const userId = localStorage.getItem('user_id');
+    // Gets user id from local storage
     if (!userId) {
       console.error('User id not saved');
       return null;
     }
+
+    // Completes mutation values
     const experiment = {
       ...data,
       status: { kind: data.status, date: new Date().toString(), user: userId },
@@ -76,6 +98,7 @@ const ExperimentForm = ({ closeModal }: Props) => {
     title: '',
     description: '',
     status: null,
+    projects: '',
   };
 
   return (
@@ -93,6 +116,13 @@ const ExperimentForm = ({ closeModal }: Props) => {
       <FormInput label="Title" name="title" />
       <FormInput label="Description" name="description" />
       <FormSelect label="Status" name="status" items={['active', 'inactive']} />
+      <FormSelectQuery
+        label="Projects"
+        name="projects"
+        loading={loading}
+        error={error?.message}
+        items={userProjects}
+      />
     </ModalForm>
   );
 };
