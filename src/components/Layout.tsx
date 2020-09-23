@@ -7,7 +7,7 @@ interface LayoutProps {
   routes: Array<{ name: string; path: string }>;
 }
 
-const LayoutComponent = ({
+const Layout = ({
   children,
   routes,
   path,
@@ -21,4 +21,4 @@ const LayoutComponent = ({
     <Redirect to="/signin" noThrow />
   );
 
-export default LayoutComponent;
+export default Layout;
