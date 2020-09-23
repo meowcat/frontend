@@ -50,6 +50,7 @@ export type Query = {
   measurements: MeasurementPage;
   project?: Maybe<Project>;
   projects?: Maybe<ProjectPage>;
+  projectsByOwner?: Maybe<Array<Project>>;
   sample?: Maybe<Sample>;
   samples: SamplePage;
   user?: Maybe<User>;
@@ -99,6 +100,11 @@ export type QueryProjectArgs = {
 export type QueryProjectsArgs = {
   page: Scalars['Int'];
   filters: ProjectFilters;
+};
+
+
+export type QueryProjectsByOwnerArgs = {
+  ownerId: Scalars['String'];
 };
 
 
@@ -257,6 +263,7 @@ export type Experiment = {
   meta?: Maybe<Scalars['JSON']>;
   input?: Maybe<Array<Sample>>;
   output?: Maybe<Array<Sample>>;
+  attachments?: Maybe<Array<File>>;
 };
 
 export type ExperimentInput = {
@@ -570,7 +577,7 @@ export type ViewQuery = (
   { __typename?: 'Query' }
   & { project?: Maybe<(
     { __typename?: 'Project' }
-    & Pick<Project, '_id' | 'title'>
+    & Pick<Project, '_id' | 'title' | 'view'>
     & { experiments?: Maybe<Array<(
       { __typename?: 'Experiment' }
       & Pick<Experiment, '_id' | 'codeId'>
@@ -617,6 +624,19 @@ export type ProjectsQuery = (
       & ProjectFieldsFragment
     )>> }
   )> }
+);
+
+export type ProjectsByOwnerQueryVariables = Exact<{
+  ownerId: Scalars['String'];
+}>;
+
+
+export type ProjectsByOwnerQuery = (
+  { __typename?: 'Query' }
+  & { projectsByOwner?: Maybe<Array<(
+    { __typename?: 'Project' }
+    & ProjectFieldsFragment
+  )>> }
 );
 
 export type CreateProjectMutationVariables = Exact<{
@@ -944,6 +964,7 @@ export const ViewDocument = gql`
         signedUrl
       }
     }
+    view
   }
 }
     `;
@@ -1015,6 +1036,42 @@ export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery
 export type ProjectsQueryResult = ApolloReactCommon.QueryResult<ProjectsQuery, ProjectsQueryVariables>;
 export function refetchProjectsQuery(variables?: ProjectsQueryVariables) {
       return { query: ProjectsDocument, variables: variables }
+    }
+export const ProjectsByOwnerDocument = gql`
+    query projectsByOwner($ownerId: String!) {
+  projectsByOwner(ownerId: $ownerId) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useProjectsByOwnerQuery__
+ *
+ * To run a query within a React component, call `useProjectsByOwnerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProjectsByOwnerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProjectsByOwnerQuery({
+ *   variables: {
+ *      ownerId: // value for 'ownerId'
+ *   },
+ * });
+ */
+export function useProjectsByOwnerQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ProjectsByOwnerQuery, ProjectsByOwnerQueryVariables>) {
+        return ApolloReactHooks.useQuery<ProjectsByOwnerQuery, ProjectsByOwnerQueryVariables>(ProjectsByOwnerDocument, baseOptions);
+      }
+export function useProjectsByOwnerLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ProjectsByOwnerQuery, ProjectsByOwnerQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ProjectsByOwnerQuery, ProjectsByOwnerQueryVariables>(ProjectsByOwnerDocument, baseOptions);
+        }
+export type ProjectsByOwnerQueryHookResult = ReturnType<typeof useProjectsByOwnerQuery>;
+export type ProjectsByOwnerLazyQueryHookResult = ReturnType<typeof useProjectsByOwnerLazyQuery>;
+export type ProjectsByOwnerQueryResult = ApolloReactCommon.QueryResult<ProjectsByOwnerQuery, ProjectsByOwnerQueryVariables>;
+export function refetchProjectsByOwnerQuery(variables?: ProjectsByOwnerQueryVariables) {
+      return { query: ProjectsByOwnerDocument, variables: variables }
     }
 export const CreateProjectDocument = gql`
     mutation createProject($project: ProjectInput!) {
