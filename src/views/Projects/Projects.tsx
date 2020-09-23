@@ -17,6 +17,7 @@ import {
   renderLastStatus,
   renderOwners,
   renderTags,
+  renderView,
 } from '../../utils/tableRenders';
 
 function stringSorter(key: 'title') {
@@ -57,6 +58,11 @@ const columns: TableColumn<ProjectFieldsFragment>[] = [
     key: 'status',
     title: 'Status',
     render: renderLastStatus,
+  },
+  {
+    key: '_id',
+    title: 'View',
+    render: renderView,
   },
 ];
 
