@@ -43,9 +43,9 @@ export function renderDrop(
     case ItemTypes.FORMULA: {
       return (
         <div key={type + key} style={{ position: 'absolute', left: x, top: y }}>
-          <label htmlFor={type + key}>{type}</label>
+          <label htmlFor={type + key}>{type}</label>{' '}
           <input
-            className="border-b border-gray-600 border-solid rounded"
+            className="border border-gray-600 border-solid rounded"
             name={type + key}
           />
         </div>

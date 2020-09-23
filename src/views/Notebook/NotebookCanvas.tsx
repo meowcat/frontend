@@ -15,7 +15,7 @@ const NotebookCanvas = () => {
     collect: (monitor) => ({ isOver: !!monitor.isOver() }),
   });
   return (
-    <div ref={drop} className="h-64 min-h-full">
+    <div ref={drop} style={{ height: '70vh' }}>
       {isOver
         ? 'Drop item'
         : created.map(({ position: { x, y }, item: { type } }, index) =>
