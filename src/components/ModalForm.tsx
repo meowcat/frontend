@@ -46,7 +46,7 @@ const ModalForm = ({
           To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
       */}
       <div
-        className="transition-all transform bg-white rounded-lg shadow-xl z-25 sm:max-w-lg sm:w-full"
+        className="z-30 transition-all transform bg-white rounded-lg shadow-xl sm:max-w-lg sm:w-full"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-headline"
