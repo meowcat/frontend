@@ -2955,6 +2955,14 @@ video {
   z-index: 20;
 }
 
+.z-30 {
+  z-index: 30;
+}
+
+.z-40 {
+  z-index: 40;
+}
+
 .gap-4 {
   grid-gap: 1rem;
   gap: 1rem;
