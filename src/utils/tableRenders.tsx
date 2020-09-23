@@ -1,3 +1,4 @@
+import { Link } from '@reach/router';
 import React from 'react';
 
 import Tag from '../components/Tag';
@@ -32,4 +33,12 @@ export function renderOwners(owners: Array<null | User>) {
   const reducer = (acc: React.ReactNode[], curr: null | User) =>
     curr ? [...acc, <Tag key={curr._id}>{curr.name}</Tag>] : acc;
   return owners.reduce(reducer, []);
+}
+
+export function renderView(id: string) {
+  return (
+    <Link to={`/notebook/${id}`} className="text-blue-600">
+      View →
+    </Link>
+  );
 }
