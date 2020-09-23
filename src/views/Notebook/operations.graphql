@@ -1,0 +1,20 @@
+query view($projectId: String!) {
+  project(_id: $projectId) {
+    _id
+    title
+    experiments {
+      _id
+      codeId
+    }
+    samples {
+      _id
+      codeId
+      attachments {
+        _id
+        filename
+        signedUrl
+      }
+    }
+    view
+  }
+}

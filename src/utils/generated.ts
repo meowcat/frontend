@@ -343,6 +343,9 @@ export type Project = {
   tags?: Maybe<Array<Scalars['String']>>;
   status?: Maybe<Array<Status>>;
   meta?: Maybe<Scalars['JSON']>;
+  view?: Maybe<Scalars['JSON']>;
+  experiments?: Maybe<Array<Experiment>>;
+  samples?: Maybe<Array<Sample>>;
 };
 
 export type ProjectInput = {
@@ -406,7 +409,7 @@ export type Sample = {
   description?: Maybe<Scalars['String']>;
   comments?: Maybe<Array<SampleComment>>;
   summary?: Maybe<Array<SampleSummary>>;
-  attachements?: Maybe<Array<File>>;
+  attachments?: Maybe<Array<File>>;
   measurements?: Maybe<Array<Measurement>>;
 };
 
@@ -555,6 +558,30 @@ export type CreateExperimentMutation = (
   & { createExperiment?: Maybe<(
     { __typename?: 'Experiment' }
     & ExperimentFieldsFragment
+  )> }
+);
+
+export type ViewQueryVariables = Exact<{
+  projectId: Scalars['String'];
+}>;
+
+
+export type ViewQuery = (
+  { __typename?: 'Query' }
+  & { project?: Maybe<(
+    { __typename?: 'Project' }
+    & Pick<Project, '_id' | 'title'>
+    & { experiments?: Maybe<Array<(
+      { __typename?: 'Experiment' }
+      & Pick<Experiment, '_id' | 'codeId'>
+    )>>, samples?: Maybe<Array<(
+      { __typename?: 'Sample' }
+      & Pick<Sample, '_id' | 'codeId'>
+      & { attachments?: Maybe<Array<(
+        { __typename?: 'File' }
+        & Pick<File, '_id' | 'filename' | 'signedUrl'>
+      )>> }
+    )>> }
   )> }
 );
 
@@ -899,6 +926,56 @@ export function useCreateExperimentMutation(baseOptions?: ApolloReactHooks.Mutat
 export type CreateExperimentMutationHookResult = ReturnType<typeof useCreateExperimentMutation>;
 export type CreateExperimentMutationResult = ApolloReactCommon.MutationResult<CreateExperimentMutation>;
 export type CreateExperimentMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateExperimentMutation, CreateExperimentMutationVariables>;
+export const ViewDocument = gql`
+    query view($projectId: String!) {
+  project(_id: $projectId) {
+    _id
+    title
+    experiments {
+      _id
+      codeId
+    }
+    samples {
+      _id
+      codeId
+      attachments {
+        _id
+        filename
+        signedUrl
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useViewQuery__
+ *
+ * To run a query within a React component, call `useViewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useViewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useViewQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useViewQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ViewQuery, ViewQueryVariables>) {
+        return ApolloReactHooks.useQuery<ViewQuery, ViewQueryVariables>(ViewDocument, baseOptions);
+      }
+export function useViewLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ViewQuery, ViewQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ViewQuery, ViewQueryVariables>(ViewDocument, baseOptions);
+        }
+export type ViewQueryHookResult = ReturnType<typeof useViewQuery>;
+export type ViewLazyQueryHookResult = ReturnType<typeof useViewLazyQuery>;
+export type ViewQueryResult = ApolloReactCommon.QueryResult<ViewQuery, ViewQueryVariables>;
+export function refetchViewQuery(variables?: ViewQueryVariables) {
+      return { query: ViewDocument, variables: variables }
+    }
 export const ProjectsDocument = gql`
     query projects($page: Int!, $filters: ProjectFilters!) {
   projects(page: $page, filters: $filters) {
