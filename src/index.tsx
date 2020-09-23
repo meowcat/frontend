@@ -39,9 +39,7 @@ const App = () => (
         </Layout>
       ))}
 
-      <Layout path="/notebook" routes={menuRoutes}>
-        <Notebook path="/" />
-      </Layout>
+      <Notebook path="/notebook/:projectId" routes={menuRoutes} />
     </Router>
   </ApolloProvider>
 );
