@@ -8,6 +8,7 @@ interface SelectProps {
   items: string[];
 }
 
+// Display a check next to selected item
 const CheckItem = () => (
   <span className="absolute inset-y-0 right-0 flex items-center pr-4">
     <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
@@ -44,12 +45,15 @@ const FormSelect = ({ label, name, items }: SelectProps) => {
 
   return (
     <div className="min-w-full pb-3">
+      {/* Label */}
       <label
         {...getLabelProps()}
         className="block text-sm font-medium leading-5 text-gray-700"
       >
         {label}
       </label>
+
+      {/* Button with response */}
       <div className="relative">
         <span className="z-30 inline-block w-full rounded-md shadow-sm">
           <button
@@ -96,17 +100,17 @@ const FormSelect = ({ label, name, items }: SelectProps) => {
           >
             {items.map((item, index) => (
               <li
-                key={`${item}${index}`}
                 {...getItemProps({ item, index })}
+                key={`${item}${index}`}
                 className="relative py-2 pl-3 text-gray-900 cursor-default select-none pr-9 hover:bg-gray-200"
               >
                 <div className="flex items-center space-x-3">
                   <span
-                    className={`block ${
+                    className={`block truncate ${
                       highlightedIndex === index
                         ? 'font-semibold'
                         : 'font-normal'
-                    } truncate`}
+                    }`}
                   >
                     {item}
                   </span>
@@ -117,6 +121,8 @@ const FormSelect = ({ label, name, items }: SelectProps) => {
           </ul>
         </div>
       </div>
+
+      {/* Error display */}
       {hasError ? (
         <span className="block text-sm font-medium leading-5 text-red-600">
           {error}
