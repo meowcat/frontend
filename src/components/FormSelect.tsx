@@ -29,10 +29,10 @@ const FormSelect = ({ label, name, items }: SelectProps) => {
   // Get utilities for select
   const {
     isOpen,
+    highlightedIndex,
     getToggleButtonProps,
     getLabelProps,
     getMenuProps,
-    highlightedIndex,
     getItemProps,
   } = useSelect({
     items,
